@@ -1,0 +1,2952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>My E-commerce Store</title>
+  <style>
+    /* CSS Variables for Themes */
+    :root {
+      /* Light theme colors */
+      --body-bg: #f0f2f5;
+      --body-color: #111;
+      --header-bg: #131921;
+      --header-color: white;
+      --category-slider-bg: #232f3e;
+      --category-item-bg: #364759;
+      --category-item-color: white;
+      --product-card-bg: #ffffff;
+      --product-card-border: #ddd;
+      --modal-content-bg: #fefefe;
+      --modal-content-border: #888;
+      --modal-text-color: #333;
+      --modal-border-light: #eee;
+      --toast-bg: #333;
+      --toast-color: #fff;
+      --footer-bg: #131921;
+      --footer-color: #bbb;
+      --form-label-color: #333;
+      --form-input-border: #ddd;
+      --order-item-bg: #f9f9f9;
+      --order-item-border: #ddd;
+      --order-text-color: #555;
+      --shipping-text-color: #666;
+      --button-bg: #f0c14b; /* Default button yellow */
+      --button-color: #111;
+      --button-hover-bg: #ddb347;
+      --return-button-bg: #dc3545; /* Red for return */
+      --return-button-hover-bg: #c82333;
+      --refund-button-bg: #007bff; /* Blue for refund */
+      --refund-button-hover-bg: #0069d9;
+      --track-button-bg: #4CAF50; /* Green for track delivery */
+      --track-button-hover-bg: #45a049;
+      --update-status-button-bg: #17a2b8; /* Info blue for update status */
+      --update-status-button-hover-bg: #138496;
+      --cancel-button-bg: #6c757d; /* Grey for cancel */
+      --cancel-button-hover-bg: #5a6268;
+    }
+
+    body.dark-mode {
+      /* Dark theme colors */
+      --body-bg: #1a1a1a;
+      --body-color: #e0e0e0;
+      --header-bg: #222;
+      --header-color: #f0f0f0;
+      --category-slider-bg: #333;
+      --category-item-bg: #555;
+      --category-item-color: #f0f0f0;
+      --product-card-bg: #282828;
+      --product-card-border: #444;
+      --modal-content-bg: #333;
+      --modal-content-border: #666;
+      --modal-text-color: #e0e0e0;
+      --modal-border-light: #555;
+      --toast-bg: #555;
+      --toast-color: #f0f0f0;
+      --footer-bg: #222;
+      --footer-color: #999;
+      --form-label-color: #e0e0e0;
+      --form-input-border: #555;
+      --order-item-bg: #282828;
+      --order-item-border: #444;
+      --order-text-color: #ccc;
+      --shipping-text-color: #aaa;
+      --button-bg: #4a4a4a; /* Darker button for dark mode */
+      --button-color: #f0f0f0;
+      --button-hover-bg: #666666;
+      --return-button-bg: #8b0000; /* Darker red for dark mode */
+      --return-button-hover-bg: #a50000;
+      --refund-button-bg: #004085; /* Darker blue for dark mode */
+      --refund-button-hover-bg: #003366;
+      --track-button-bg: #006400; /* Darker green for track delivery */
+      --track-button-hover-bg: #008000;
+      --update-status-button-bg: #0f6674; /* Darker info blue for update status */
+      --update-status-button-hover-bg: #0c4d57;
+      --cancel-button-bg: #495057; /* Darker grey for cancel */
+      --cancel-button-hover-bg: #6c757d;
+    }
+
+    /* Reset */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      background-color: var(--body-bg);
+      color: var(--body-color);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    header {
+      background-color: var(--header-bg);
+      color: var(--header-color);
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      flex-wrap: wrap;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    header h1 {
+      font-size: 24px;
+      cursor: pointer;
+      user-select: none;
+      color: #ff9900; /* Amazon orange - keep consistent */
+      flex-shrink: 0;
+    }
+    .search-bar {
+      flex-grow: 1;
+      display: flex;
+      min-width: 200px;
+      max-width: 600px; /* Limit search bar width */
+    }
+    .search-bar input {
+      width: 100%;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 4px 0 0 4px;
+      font-size: 16px;
+      outline: none;
+      background-color: var(--product-card-bg); /* Use product card background for input */
+      color: var(--body-color);
+    }
+    .search-bar button {
+      padding: 8px 16px;
+      background-color: #febd69; /* Amazon search button yellow */
+      border: none;
+      border-radius: 0 4px 4px 0;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+      color: #111; /* Keep button text dark */
+    }
+    .search-bar button:hover {
+      background-color: #f3a847;
+    }
+
+    /* Category Slider Styling */
+    .category-slider-container {
+      width: 100%;
+      overflow-x: auto; /* Enable horizontal scrolling */
+      -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+      padding: 10px 0;
+      background-color: var(--category-slider-bg);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 60px; /* Below the header */
+      z-index: 90;
+      white-space: nowrap; /* Prevent items from wrapping */
+      display: flex; /* Use flex for horizontal layout */
+      align-items: center;
+      justify-content: flex-start; /* Align items to the start */
+      gap: 10px; /* Space between categories */
+      padding-left: 20px; /* Padding for the first item */
+      padding-right: 20px; /* Padding for the last item */
+      transition: background-color 0.3s ease;
+    }
+
+    .category-item {
+      display: inline-block; /* For horizontal layout */
+      padding: 8px 15px;
+      background-color: var(--category-item-bg);
+      color: var(--category-item-color);
+      border-radius: 20px; /* Pill shape */
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: background-color 0.3s ease, transform 0.2s ease, color 0.3s ease;
+      flex-shrink: 0; /* Prevent items from shrinking */
+      user-select: none;
+    }
+
+    .category-item:hover {
+      background-color: #4a5b6e; /* Slightly different hover for both themes */
+      transform: translateY(-2px);
+    }
+
+    .category-item.active {
+      background-color: #ff9900; /* Amazon orange for active */
+      color: #111; /* Always dark text for active orange */
+      font-weight: bold;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    /* Hide scrollbar for aesthetic reasons, but keep functionality */
+    .category-slider-container::-webkit-scrollbar {
+      display: none;
+    }
+    .category-slider-container {
+      -ms-overflow-style: none; /* IE and Edge */
+      scrollbar-width: none; /* Firefox */
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+    .header-actions div {
+      cursor: pointer;
+      position: relative;
+      user-select: none;
+      padding: 5px 8px;
+      border-radius: 4px;
+      transition: background-color 0.2s ease;
+    }
+    .header-actions div:hover {
+        background-color: rgba(255,255,255,0.1);
+    }
+    .header-actions div span.count {
+      position: absolute;
+      top: -6px;
+      right: -10px;
+      background-color: #f08804; /* Amazon orange */
+      border-radius: 50%;
+      padding: 2px 6px;
+      font-size: 12px;
+      font-weight: bold;
+      color: black;
+      min-width: 20px; /* Ensure it's a circle even with single digit */
+      text-align: center;
+    }
+
+    /* Theme Toggle Switch */
+    .theme-switch-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: 15px;
+      flex-shrink: 0;
+    }
+
+    .theme-switch {
+      display: inline-block;
+      height: 24px;
+      position: relative;
+      width: 48px;
+    }
+
+    .theme-switch input {
+      display: none;
+    }
+
+    .slider {
+      background-color: #ccc;
+      bottom: 0;
+      cursor: pointer;
+      left: 0;
+      position: absolute;
+      right: 0;
+      top: 0;
+      transition: .4s;
+      border-radius: 24px;
+    }
+
+    .slider:before {
+      background-color: #fff;
+      bottom: 4px;
+      content: "";
+      height: 16px;
+      left: 4px;
+      position: absolute;
+      transition: .4s;
+      width: 16px;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: #2196F3; /* Blue for dark mode */
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(24px);
+    }
+
+    main {
+      flex-grow: 1;
+      padding: 20px;
+      max-width: 1200px;
+      margin: 20px auto;
+    }
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+      gap: 20px;
+    }
+    .product-card {
+      border: 1px solid var(--product-card-border);
+      border-radius: 8px;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background-color: var(--product-card-bg);
+      transition: box-shadow 0.3s ease, transform 0.2s ease, background-color 0.3s ease, border-color 0.3s ease;
+      cursor: pointer; /* Indicate clickable */
+    }
+    .product-card:hover {
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      transform: translateY(-5px);
+    }
+    .product-image {
+      width: 100%;
+      height: 180px;
+      object-fit: contain;
+      margin-bottom: 12px;
+      border-radius: 4px;
+    }
+    .product-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      height: 42px; /* Fixed height for consistent layout */
+      overflow: hidden;
+      line-height: 1.4;
+      color: var(--body-color);
+    }
+    .product-price {
+      font-size: 18px;
+      font-weight: bold;
+      color: #b12704; /* Amazon price red - keep consistent */
+      margin-bottom: 8px;
+    }
+    .product-rating {
+      margin-bottom: 10px;
+      color: #ffa41c; /* Amazon star yellow - keep consistent */
+    }
+    .buttons {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
+    }
+    .btn {
+      flex-grow: 1;
+      padding: 8px;
+      font-weight: bold;
+      font-size: 14px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      min-width: 100px; /* Ensure buttons don't get too small */
+    }
+    .btn-add {
+      background-color: #f0c14b; /* Amazon yellow button */
+      color: #111;
+    }
+    .btn-add:hover:not(:disabled) {
+      background-color: #ddb347;
+    }
+    .btn-wish {
+      background-color: #e7e9ec; /* Light grey */
+      color: #111;
+    }
+    .btn-wish:hover:not(:disabled) {
+      background-color: #cacbcc;
+    }
+    .btn-buy-now {
+        background-color: #FF9900; /* Amazon orange */
+        color: #fff;
+    }
+    .btn-buy-now:hover:not(:disabled) {
+        background-color: #e68a00;
+    }
+    .btn:disabled {
+        background-color: #cccccc;
+        color: #666666;
+        cursor: not-allowed;
+    }
+    footer {
+      text-align: center;
+      padding: 15px 10px;
+      background-color: var(--footer-bg);
+      color: var(--footer-color);
+      font-size: 14px;
+      user-select: none;
+      margin-top: auto; /* Push footer to bottom */
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    /* Toast Message Styling */
+    #toastMessage {
+      visibility: hidden; /* Hidden by default. */
+      min-width: 250px; /* Set a default minimum width */
+      background-color: var(--toast-bg);
+      color: var(--toast-color);
+      text-align: center; /* Centered text */
+      border-radius: 5px; /* Rounded borders */
+      padding: 12px 20px; /* Padding */
+      position: fixed; /* Sit on top of the screen */
+      z-index: 1000; /* Add a z-index if needed, higher than modal */
+      left: 50%; /* Center the snackbar */
+      transform: translateX(-50%); /* Center horizontally */
+      bottom: 30px; /* 30px from the bottom */
+      font-size: 16px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    /* Show the snackbar when clicking on a button (class added with JS) */
+    #toastMessage.show {
+      visibility: visible; /* Show the snackbar */
+      animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    }
+
+    /* Animations to fade the snackbar in and out */
+    @keyframes fadein {
+      from {bottom: 0; opacity: 0;}
+      to {bottom: 30px; opacity: 1;}
+    }
+
+    @keyframes fadeout {
+      from {bottom: 30px; opacity: 1;}
+      to {bottom: 0; opacity: 0;}
+    }
+
+    /* Modal Styling */
+    .modal {
+      display: none; /* Hidden by default */
+      position: fixed; /* Stay in place */
+      z-index: 500; /* Sit on top */
+      left: 0;
+      top: 0;
+      width: 100%; /* Full width */
+      height: 100%; /* Full height */
+      overflow: auto; /* Enable scroll if needed */
+      background-color: rgba(0,0,0,0.6); /* Black w/ opacity */
+      padding-top: 20px; /* Adjusted padding for better centering */
+    }
+
+    .modal-content {
+      background-color: var(--modal-content-bg);
+      margin: 2% auto; /* Adjusted margin for better centering */
+      padding: 25px;
+      border: 1px solid var(--modal-content-border);
+      width: 90%; /* Responsive width */
+      max-width: 800px; /* Max width for larger screens */
+      border-radius: 10px;
+      position: relative;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      transition: background-color 0.3s ease, border-color 0.3s ease;
+    }
+
+    .close-button {
+      color: #aaa;
+      float: right;
+      font-size: 30px;
+      font-weight: bold;
+      cursor: pointer;
+      position: absolute;
+      top: 10px;
+      right: 20px;
+    }
+
+    .close-button:hover,
+    .close-button:focus {
+      color: var(--modal-text-color);
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--modal-border-light);
+    }
+    .modal-header h2 {
+      color: var(--modal-text-color);
+    }
+
+    .modal-body ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .modal-body ul li {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+        border-bottom: 1px dashed var(--modal-border-light);
+        padding-bottom: 10px;
+    }
+
+    .modal-body ul li:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .modal-body .item-image {
+        width: 80px; /* Larger image in modal */
+        height: 80px;
+        object-fit: contain;
+        margin-right: 15px;
+        border: 1px solid var(--product-card-border);
+        border-radius: 4px;
+        flex-shrink: 0;
+    }
+
+    .modal-body .item-details {
+        flex-grow: 1;
+    }
+
+    .modal-body .item-title {
+        font-weight: bold;
+        font-size: 1.2em;
+        margin-bottom: 5px;
+        color: var(--modal-text-color);
+    }
+
+    .modal-body .item-price {
+        color: #b12704; /* Amazon price red - keep consistent */
+        font-weight: bold;
+        font-size: 1.1em;
+    }
+
+    .modal-body .item-actions {
+        display: flex;
+        gap: 10px;
+        flex-shrink: 0;
+        align-items: center;
+    }
+
+    .modal-body .item-actions button {
+        padding: 6px 12px; /* Slightly larger buttons */
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.9em;
+        transition: background-color 0.2s ease;
+    }
+
+    .modal-body .item-actions .remove-btn {
+        background-color: #ffe0e0; /* Light red */
+        color: #cc0000;
+    }
+    .modal-body .item-actions .remove-btn:hover {
+        background-color: #ffaaaa;
+    }
+    .modal-body .item-actions .move-btn {
+        background-color: #e0f2ff; /* Light blue */
+        color: #0056b3;
+    }
+    .modal-body .item-actions .move-btn:hover {
+        background-color: #cce7ff;
+    }
+    .modal-body .item-actions .buy-btn {
+        background-color: #f0c14b;
+        color: #111;
+    }
+    .modal-body .item-actions .buy-btn:hover {
+        background-color: #ddb347;
+    }
+    .modal-body .quantity-controls {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        margin-left: 15px; /* Space from item details */
+    }
+    .modal-body .quantity-controls button {
+        background-color: var(--product-card-border); /* Use border color for quantity buttons */
+        border: 1px solid var(--modal-content-border);
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 1em;
+        cursor: pointer;
+        color: var(--body-color);
+    }
+    .modal-body .quantity-controls button:hover {
+        background-color: #e0e0e0; /* Light grey hover */
+    }
+    .modal-body .quantity-controls span {
+        min-width: 25px;
+        text-align: center;
+        font-weight: bold;
+        color: var(--modal-text-color);
+    }
+
+
+    .modal-footer {
+        margin-top: 20px;
+        padding-top: 10px;
+        border-top: 1px solid var(--modal-border-light);
+        text-align: right;
+    }
+
+    .total-price {
+        font-size: 1.3em;
+        font-weight: bold;
+        color: #b12704; /* Amazon price red - keep consistent */
+        margin-top: 10px;
+    }
+
+    .checkout-btn {
+        background-color: #FF9900; /* Amazon orange */
+        color: white;
+        padding: 12px 25px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1.1em;
+        font-weight: bold;
+        margin-top: 15px;
+        transition: background-color 0.2s ease;
+    }
+    .checkout-btn:hover {
+        background-color: #e68a00;
+    }
+
+    /* Order History Specific Styling */
+    #orderHistoryModal .order-item {
+        margin-bottom: 15px;
+        padding: 15px;
+        border: 1px solid var(--order-item-border);
+        border-radius: 8px;
+        background-color: var(--order-item-bg);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        transition: background-color 0.3s ease, border-color 0.3s ease;
+    }
+    #orderHistoryModal .order-date {
+        font-size: 0.95em;
+        color: var(--order-text-color);
+        margin-bottom: 8px;
+        font-weight: bold;
+    }
+    #orderHistoryModal .order-status {
+        font-size: 0.9em;
+        font-weight: bold;
+        margin-bottom: 8px;
+    }
+    /* Status specific colors */
+    #orderHistoryModal .order-status.processing {
+      color: #ffc107; /* Orange */
+    }
+    #orderHistoryModal .order-status.shipped {
+      color: #17a2b8; /* Info Blue */
+    }
+    #orderHistoryModal .order-status.out_for_delivery {
+      color: #007bff; /* Primary Blue */
+    }
+    #orderHistoryModal .order-status.delivered {
+      color: #28a745; /* Success Green */
+    }
+    #orderHistoryModal .order-status.return_requested,
+    #orderHistoryModal .order-status.refund_processed {
+      color: #dc3545; /* Danger Red */
+    }
+    #orderHistoryModal .order-status.cancelled {
+      color: #6c757d; /* Grey for cancelled */
+    }
+
+
+    #orderHistoryModal .order-items-list {
+        list-style: none;
+        padding: 0;
+        margin-top: 10px;
+    }
+    #orderHistoryModal .order-items-list li {
+        display: flex;
+        align-items: center;
+        margin-bottom: 8px;
+        padding-bottom: 8px;
+        border-bottom: 1px dotted var(--modal-border-light);
+    }
+    #orderHistoryModal .order-items-list li:last-child {
+        border-bottom: none;
+    }
+    #orderHistoryModal .order-total {
+        font-weight: bold;
+        text-align: right;
+        margin-top: 15px;
+        font-size: 1.1em;
+        color: #b12704;
+    }
+    /* New: Shipping Details Styling */
+    #orderHistoryModal .shipping-details {
+        margin-top: 15px;
+        padding-top: 10px;
+        border-top: 1px dashed var(--modal-border-light);
+        font-size: 0.9em;
+        color: var(--shipping-text-color);
+    }
+    #orderHistoryModal .shipping-details p {
+        margin-bottom: 5px;
+    }
+    #orderHistoryModal .order-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 15px;
+        padding-top: 10px;
+        border-top: 1px solid var(--modal-border-light);
+    }
+    #orderHistoryModal .order-actions .btn {
+        padding: 8px 15px;
+        font-size: 0.9em;
+        font-weight: normal;
+    }
+    #orderHistoryModal .order-actions .btn-return {
+        background-color: var(--return-button-bg);
+        color: white;
+    }
+    #orderHistoryModal .order-actions .btn-return:hover {
+        background-color: var(--return-button-hover-bg);
+    }
+    #orderHistoryModal .order-actions .btn-refund {
+        background-color: var(--refund-button-bg);
+        color: white;
+    }
+    #orderHistoryModal .order-actions .btn-refund:hover {
+        background-color: var(--refund-button-hover-bg);
+    }
+    #orderHistoryModal .order-actions .btn-track { /* New style for track button in order section */
+        background-color: var(--track-button-bg);
+        color: white;
+    }
+    #orderHistoryModal .order-actions .btn-track:hover {
+        background-color: var(--track-button-hover-bg);
+    }
+    #orderHistoryModal .order-actions .btn-update-status { /* New style for update status button */
+        background-color: var(--update-status-button-bg);
+        color: white;
+    }
+    #orderHistoryModal .order-actions .btn-update-status:hover {
+        background-color: var(--update-status-button-hover-bg);
+    }
+    #orderHistoryModal .order-actions .btn-cancel { /* New style for cancel button */
+        background-color: var(--cancel-button-bg);
+        color: white;
+    }
+    #orderHistoryModal .order-actions .btn-cancel:hover {
+        background-color: var(--cancel-button-hover-bg);
+    }
+
+
+    /* Product Detail Modal Specific Styling */
+    #productDetailModal .modal-body {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+    #productDetailModal .product-detail-image {
+        width: 100%;
+        max-width: 300px; /* Max width for detail image */
+        height: auto;
+        object-fit: contain;
+        margin: 0 auto 20px auto; /* Center image */
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    #productDetailModal .product-detail-info {
+        text-align: left;
+    }
+    #productDetailModal .product-detail-title {
+        font-size: 1.8em;
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: var(--body-color);
+    }
+    #productDetailModal .product-detail-description {
+        font-size: 1em;
+        color: var(--order-text-color);
+        margin-bottom: 15px;
+        line-height: 1.6;
+    }
+    #productDetailModal .product-detail-price {
+        font-size: 1.5em;
+        font-weight: bold;
+        color: #b12704;
+        margin-bottom: 10px;
+    }
+    #productDetailModal .product-detail-rating {
+        font-size: 1.1em;
+        color: #ffa41c;
+        margin-bottom: 20px;
+    }
+    #productDetailModal .product-detail-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 20px;
+    }
+    #productDetailModal .product-detail-actions .btn {
+        flex-grow: 1;
+        padding: 10px 20px;
+        font-size: 16px;
+    }
+
+    /* Order Form Modal Specific Styling */
+    #orderFormModal .form-group {
+        margin-bottom: 15px;
+    }
+    #orderFormModal label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+        color: var(--form-label-color);
+    }
+    #orderFormModal input[type="text"],
+    #orderFormModal input[type="email"],
+    #orderFormModal textarea,
+    #orderFormModal select,
+    #orderFormModal input[type="number"],
+    #loginModal input[type="email"],
+    #loginModal input[type="password"],
+    #createAccountModal input[type="text"],
+    #createAccountModal input[type="email"],
+    #createAccountModal input[type="password"] { /* Added number input */
+        width: 100%;
+        padding: 10px;
+        border: 1px solid var(--form-input-border);
+        border-radius: 5px;
+        font-size: 1em;
+        box-shadow: inset 0 1px 2px rgba(0,0,0,0.075);
+        background-color: var(--product-card-bg);
+        color: var(--body-color);
+    }
+    #orderFormModal textarea {
+        resize: vertical;
+        min-height: 80px;
+    }
+    #orderFormModal .order-summary {
+        border-top: 1px solid var(--modal-border-light);
+        padding-top: 15px;
+        margin-top: 20px;
+    }
+    #orderFormModal .order-summary p {
+        margin-bottom: 8px;
+        font-size: 1.1em;
+        color: var(--modal-text-color);
+    }
+    #orderFormModal .order-summary .total-price {
+        font-size: 1.4em;
+        color: #b12704;
+    }
+    #orderFormModal .submit-order-btn {
+        background-color: #28a745; /* Green for submit */
+        color: white;
+        padding: 12px 25px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1.1em;
+        font-weight: bold;
+        margin-top: 20px;
+        transition: background-color 0.2s ease;
+    }
+    #orderFormModal .submit-order-btn:hover {
+        background-color: #218838;
+    }
+
+    /* Auth Modal Specific Styles */
+    #loginModal .modal-body, #createAccountModal .modal-body {
+        padding: 20px;
+    }
+    #loginModal .form-group, #createAccountModal .form-group {
+        margin-bottom: 15px;
+    }
+    #loginModal label, #createAccountModal label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+        color: var(--form-label-color);
+    }
+    #loginModal .auth-button, #createAccountModal .auth-button {
+        display: block;
+        width: 100%;
+        padding: 10px 15px;
+        background-color: var(--button-bg);
+        color: var(--button-color);
+        border: none;
+        border-radius: 5px;
+        font-size: 1.1em;
+        font-weight: bold;
+        cursor: pointer;
+        margin-top: 20px;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    #loginModal .auth-button:hover, #createAccountModal .auth-button:hover {
+        background-color: var(--button-hover-bg);
+    }
+    #loginModal .modal-body p, #createAccountModal .modal-body p {
+        margin-top: 15px;
+        text-align: center;
+        color: var(--modal-text-color);
+    }
+    #loginModal .modal-body a, #createAccountModal .modal-body a {
+        color: #007bff; /* Standard link color */
+        text-decoration: none;
+        cursor: pointer;
+        transition: color 0.2s ease;
+    }
+    #loginModal .modal-body a:hover, #createAccountModal .modal-body a:hover {
+        color: #0056b3;
+        text-decoration: underline;
+    }
+
+    /* User Profile Modal Specific Styles */
+    #userProfileModal .profile-info p {
+        margin-bottom: 10px;
+        font-size: 1.1em;
+        color: var(--modal-text-color);
+    }
+    #userProfileModal .profile-info strong {
+        color: var(--body-color);
+    }
+    #userProfileModal .profile-actions {
+        margin-top: 20px;
+        padding-top: 15px;
+        border-top: 1px solid var(--modal-border-light);
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    #userProfileModal .profile-actions .btn {
+        width: 100%;
+        padding: 10px;
+        font-size: 1em;
+    }
+
+    /* Responsive Design Media Queries */
+
+    /* For screens larger than 768px (Desktops, Laptops) */
+    @media (min-width: 768px) {
+        header {
+            justify-content: space-between; /* Distribute items evenly */
+            padding: 10px 40px; /* More padding on wider screens */
+        }
+        .search-bar {
+            flex-grow: 1;
+            max-width: 500px; /* Adjust max width for search bar */
+            margin: 0; /* Remove margin for wider screens */
+        }
+        .header-actions {
+            justify-content: flex-end; /* Align actions to the right */
+            width: auto;
+            margin-top: 0;
+        }
+        .category-slider-container {
+            padding-left: 40px;
+            padding-right: 40px;
+        }
+        .products-grid {
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); /* Slightly larger cards */
+            gap: 25px;
+        }
+        .modal-content {
+            width: 80%;
+            max-width: 900px;
+            padding: 30px;
+        }
+        #productDetailModal .modal-body {
+            flex-direction: row; /* Side-by-side on larger screens */
+            align-items: flex-start;
+        }
+        #productDetailModal .product-detail-image {
+            width: 40%; /* Image takes 40% width */
+            margin: 0; /* Remove auto margin */
+            margin-right: 30px; /* Space between image and info */
+        }
+        #productDetailModal .product-detail-info {
+            width: 60%; /* Info takes 60% width */
+        }
+        .buttons {
+            flex-direction: row; /* Keep buttons in a row */
+        }
+        .btn {
+            width: auto; /* Auto width for flex-grow */
+        }
+    }
+
+    /* For screens between 481px and 767px (Tablets) */
+    @media (min-width: 481px) and (max-width: 767px) {
+        header {
+            flex-direction: row;
+            justify-content: space-between;
+            padding: 10px 20px;
+        }
+        .search-bar {
+            flex-grow: 1;
+            width: auto;
+            margin: 0;
+        }
+        .header-actions {
+            width: auto;
+            justify-content: flex-end;
+            margin-top: 0;
+            gap: 10px;
+        }
+        .category-slider-container {
+            padding: 10px 20px;
+        }
+        .products-grid {
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        .modal-content {
+            width: 90%;
+            margin: 5% auto;
+            padding: 20px;
+        }
+        .modal-body .item-image {
+            width: 60px;
+            height: 60px;
+        }
+        .modal-body .item-details {
+            font-size: 1em;
+        }
+        .modal-body .item-actions button {
+            padding: 5px 10px;
+            font-size: 0.85em;
+        }
+        #productDetailModal .modal-body {
+            flex-direction: column; /* Stack on tablets too if needed, or keep row */
+            align-items: center;
+        }
+        #productDetailModal .product-detail-image {
+            width: 80%;
+            max-width: 250px;
+            margin-bottom: 20px;
+        }
+        #productDetailModal .product-detail-info {
+            width: 100%;
+            text-align: center;
+        }
+        .buttons {
+            flex-direction: row;
+        }
+        .btn {
+            width: auto;
+        }
+    }
+
+    /* For screens up to 480px (Mobile Phones) */
+    @media (max-width: 480px) {
+        header {
+            flex-direction: column; /* Stack items vertically */
+            justify-content: center;
+            padding: 10px;
+            gap: 10px;
+        }
+        header h1 {
+            font-size: 20px;
+            width: 100%;
+            text-align: center;
+        }
+        .search-bar {
+            width: 100%;
+            margin: 5px 0;
+        }
+        .header-actions {
+            width: 100%;
+            justify-content: center;
+            margin-top: 5px;
+            gap: 8px;
+            flex-wrap: wrap; /* Allow buttons to wrap */
+        }
+        .header-actions div {
+            padding: 5px;
+        }
+        .theme-switch-wrapper {
+            margin-left: 0;
+            width: 100%;
+            justify-content: center;
+        }
+        .category-slider-container {
+            padding: 8px 10px;
+            gap: 8px;
+        }
+        .category-item {
+            font-size: 12px;
+            padding: 5px 10px;
+        }
+        main {
+            padding: 10px;
+            margin: 10px auto;
+        }
+        .products-grid {
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Smaller cards for mobile */
+            gap: 10px;
+        }
+        .product-image {
+            height: 150px;
+        }
+        .product-title {
+            font-size: 14px;
+            height: 38px;
+        }
+        .product-price {
+            font-size: 16px;
+        }
+        .buttons {
+            flex-direction: column; /* Stack buttons */
+            gap: 5px;
+        }
+        .btn {
+            width: 100%; /* Full width for stacked buttons */
+            padding: 6px;
+            font-size: 13px;
+        }
+        .modal-content {
+            width: 98%;
+            margin: 5px auto;
+            padding: 10px;
+        }
+        .modal-header h2 {
+            font-size: 1.3em;
+        }
+        .close-button {
+            font-size: 24px;
+            top: 5px;
+            right: 10px;
+        }
+        .modal-body .item-image {
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+        }
+        .modal-body .item-details {
+            font-size: 0.8em;
+        }
+        .modal-body .item-actions {
+            flex-direction: column;
+            gap: 5px;
+            align-items: flex-end;
+        }
+        .modal-body .item-actions button {
+            padding: 3px 6px;
+            font-size: 0.7em;
+        }
+        .modal-body .quantity-controls {
+            margin-left: 0;
+            justify-content: center;
+        }
+        .total-price {
+            font-size: 1.1em;
+        }
+        .checkout-btn, .submit-order-btn, .auth-button {
+            padding: 10px 15px;
+            font-size: 1em;
+        }
+        #toastMessage {
+            min-width: 95%;
+            left: 2.5%;
+            transform: translateX(0);
+            bottom: 10px;
+            font-size: 13px;
+        }
+        #productDetailModal .product-detail-image {
+            width: 90%;
+            max-width: 200px;
+        }
+        #productDetailModal .product-detail-title {
+            font-size: 1.5em;
+        }
+        #productDetailModal .product-detail-description {
+            font-size: 0.9em;
+        }
+        #userProfileModal .profile-info p {
+            font-size: 1em;
+        }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>MyStore</h1>
+    <div class="search-bar">
+      <input type="text" placeholder="Search products..." id="searchInput" />
+      <button onclick="applyFilters()">Search</button>
+    </div>
+    <div class="header-actions">
+      <div id="authBtn" onclick="handleAuthClick()">Log In</div> <!-- Combined Auth Button -->
+      <div id="wishlistBtn" onclick="openModal('wishlistModal')">
+        Wishlist
+        <span class="count" id="wishlistCount">0</span>
+      </div>
+      <div id="cartBtn" onclick="openModal('cartModal')">
+        Cart
+        <span class="count" id="cartCount">0</span>
+      </div>
+      <div id="ordersBtn" onclick="openModal('orderHistoryModal')">
+        Orders
+        <span class="count" id="ordersCount">0</span>
+      </div>
+      <div class="theme-switch-wrapper">
+        <label class="theme-switch" for="checkbox">
+          <input type="checkbox" id="checkbox" />
+          <div class="slider round"></div>
+        </label>
+        <em style="font-size: 14px; color: var(--header-color);">Dark Mode</em>
+      </div>
+    </div>
+  </header>
+
+  <div class="category-slider-container">
+    <div id="categorySlider">
+    </div>
+  </div>
+
+  <main>
+    <div class="products-grid" id="productsGrid">
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2025 My E-commerce Store. All rights reserved.
+  </footer>
+
+  <div id="toastMessage"></div>
+
+  <div id="cartModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Your Shopping Cart</h2>
+        <span class="close-button" onclick="closeModal('cartModal')">&times;</span>
+      </div>
+      <div class="modal-body">
+        <ul id="cartItemsList">
+          </ul>
+      </div>
+      <div class="modal-footer">
+        <div class="total-price">Total: <span id="cartTotalPrice">₹0</span></div>
+        <button class="checkout-btn" onclick="checkoutCart()">Proceed to Checkout</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="wishlistModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Your Wishlist</h2>
+        <span class="close-button" onclick="closeModal('wishlistModal')">&times;</span>
+      </div>
+      <div class="modal-body">
+        <ul id="wishlistItemsList">
+          </ul>
+      </div>
+    </div>
+  </div>
+
+  <div id="orderHistoryModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Your Orders</h2>
+        <span class="close-button" onclick="closeModal('orderHistoryModal')">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div id="orderHistoryList">
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="productDetailModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="productDetailTitle">Product Details</h2>
+        <span class="close-button" onclick="closeModal('productDetailModal')">&times;</span>
+      </div>
+      <div class="modal-body">
+        <img id="productDetailImage" src="" alt="Product Image" class="product-detail-image" onerror="this.onerror=null; this.src='https://placehold.co/300x300/CCCCCC/000000?text=Image+Error';">
+        <div class="product-detail-info">
+          <div id="productDetailDescription" class="product-detail-description"></div>
+          <div id="productDetailPrice" class="product-detail-price"></div>
+          <div id="productDetailRating" class="product-detail-rating"></div>
+          <div id="productDetailActions" class="product-detail-actions">
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="orderFormModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Complete Your Order</h2>
+        <span class="close-button" onclick="closeModal('orderFormModal')">&times;</span>
+      </div>
+      <div class="modal-body">
+        <form id="orderForm">
+          <div class="form-group">
+            <label for="fullName">Full Name:</label>
+            <input type="text" id="fullName" name="fullName" required>
+          </div>
+          <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+          </div>
+          <div class="form-group">
+            <label for="address">Shipping Address:</label>
+            <textarea id="address" name="address" rows="3" required></textarea>
+          </div>
+          <div class="form-group">
+            <label for="paymentMethod">Payment Method:</label>
+            <select id="paymentMethod" name="paymentMethod" required>
+              <option value="">Select a method</option>
+              <option value="Credit Card">Credit Card</option>
+              <option value="Debit Card">Debit Card</option>
+              <option value="Net Banking">Net Banking</text>
+              <option value="UPI">UPI</option>
+              <option value="Cash on Delivery">Cash on Delivery</option>
+            </select>
+          </div>
+          <div class="order-summary">
+            <p>Product: <span id="orderSummaryProductTitle"></span></p>
+            <div class="form-group">
+                <label for="orderQuantity">Quantity:</label>
+                <input type="number" id="orderQuantity" name="orderQuantity" value="1" min="1" required>
+            </div>
+            <p>Price per item: <span id="orderSummaryProductPricePerItem"></span></p>
+            <p class="total-price">Total: <span id="orderSummaryTotalPrice"></span></p>
+          </div>
+          <button type="submit" class="submit-order-btn">Place Order</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div id="loginModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Log In to Your Account</h2>
+        <span class="close-button" onclick="closeModal('loginModal')">&times;</span>
+      </div>
+      <div class="modal-body">
+        <form id="loginForm">
+          <div class="form-group">
+            <label for="loginEmail">Email:</label>
+            <input type="email" id="loginEmail" name="loginEmail" required>
+          </div>
+          <div class="form-group">
+            <label for="loginPassword">Password:</label>
+            <input type="password" id="loginPassword" name="loginPassword" required>
+          </div>
+          <button type="submit" class="auth-button">Log In</button>
+        </form>
+        <p>Don't have an account? <a onclick="closeModal('loginModal'); openModal('createAccountModal');">Create Account here.</a></p>
+      </div>
+    </div>
+  </div>
+
+  <div id="createAccountModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Create New Account</h2>
+        <span class="close-button" onclick="closeModal('createAccountModal')">&times;</span>
+      </div>
+      <div class="modal-body">
+        <form id="createAccountForm">
+          <div class="form-group">
+            <label for="createName">Full Name:</label>
+            <input type="text" id="createName" name="createName" required>
+          </div>
+          <div class="form-group">
+            <label for="createEmail">Email:</label>
+            <input type="email" id="createEmail" name="createEmail" required>
+          </div>
+          <div class="form-group">
+            <label for="createPassword">Password:</label>
+            <input type="password" id="createPassword" name="createPassword" required>
+          </div>
+          <button type="submit" class="auth-button">Create Account</button>
+        </form>
+        <p>Already have an account? <a onclick="closeModal('createAccountModal'); openModal('loginModal');">Log In here.</a></p>
+      </div>
+    </div>
+  </div>
+
+  <div id="userProfileModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="userProfileTitle">My Profile</h2>
+        <span class="close-button" onclick="closeModal('userProfileModal')">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div class="profile-info">
+          <p><strong>Name:</strong> <span id="profileName"></span></p>
+          <p><strong>Email:</strong> <span id="profileEmail"></span></p>
+        </div>
+        <div class="profile-actions">
+          <h3>My Recent Orders</h3>
+          <div id="profileRecentOrders">No recent orders.</div>
+          <button class="btn checkout-btn" onclick="closeModal('userProfileModal'); openModal('orderHistoryModal');">View All Orders</button>
+          <button class="btn btn-return" onclick="logout(); closeModal('userProfileModal');">Log Out</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <script>
+    const products = [
+      {
+        id: '1',
+        name: 'Wireless Bluetooth Headphones with Noise Cancellation',
+        category: 'Electronics',
+        price: 2499,
+        image: 'https://m.media-amazon.com/images/I/61SUj2ZzmWL._SL1500_.jpg',
+        rating: 4.5,
+        description: 'Immerse yourself in pure sound with these over-ear Bluetooth headphones featuring active noise cancellation. Enjoy crystal-clear audio and deep bass for up to 30 hours on a single charge. Perfect for travel, work, and everyday listening.'
+      },
+      {
+        id: '2',
+        name: 'Smart Fitness Tracker with Heart Rate Monitor',
+        category: 'Electronics',
+        price: 1599,
+        image: 'https://m.media-amazon.com/images/I/61q2J+3-jYL._SL1500_.jpg',
+        rating: 4.2,
+        description: 'Track your steps, distance, calories burned, and sleep patterns with this sleek fitness tracker. It continuously monitors your heart rate and offers multiple sports modes. Stay motivated and reach your fitness goals.'
+      },
+      {
+        id: '3',
+        name: 'Portable Mini Projector for Home Cinema',
+        category: 'Electronics',
+        price: 6999,
+        image: 'https://m.media-amazon.com/images/I/61s+E+C4-fL._SL1500_.jpg',
+        rating: 4.7,
+        description: 'Transform any room into a home theater with this compact and lightweight projector. Enjoy stunning HD visuals up to 100 inches, with built-in speakers and versatile connectivity options. Ideal for movies, gaming, and presentations.'
+      },
+      {
+        id: '4',
+        name: 'Ergonomic Office Chair with Lumbar Support',
+        category: 'Home & Office',
+        price: 7999,
+        image: 'https://m.media-amazon.com/images/I/71wq8q2f+pL._SL1500_.jpg',
+        rating: 4.6,
+        description: 'Experience ultimate comfort and support during long working hours with this ergonomic office chair. Features adjustable lumbar support, breathable mesh back, and padded armrests to promote good posture and reduce fatigue.'
+      },
+      {
+        id: '5',
+        name: 'Stainless Steel Insulated Water Bottle (1 Liter)',
+        category: 'Home & Office',
+        price: 799,
+        image: 'https://m.media-amazon.com/images/I/61U-nB3c2sL._SL1500_.jpg',
+        rating: 4.8,
+        description: 'Stay hydrated all day long with this durable stainless steel water bottle. Its double-wall insulation keeps drinks cold for 24 hours and hot for 12 hours. Perfect for gym, office, or outdoor adventures.'
+      },
+      {
+        id: '6',
+        name: 'Non-Stick Cookware Set (5-Piece) with Lids',
+        category: 'Kitchen & Dining',
+        price: 4999,
+        image: 'https://m.media-amazon.com/images/I/71YyLh8jYgL._SL1500_.jpg',
+        rating: 4.3,
+        description: 'Upgrade your kitchen with this versatile 5-piece non-stick cookware set. Includes frying pans, saucepans, and a kadhai, all with heat-resistant handles and glass lids. Ensures even cooking and easy cleanup.'
+      },
+      {
+        id: '7',
+        name: 'Digital Kitchen Food Scale with LCD Display',
+        category: 'Kitchen & Dining',
+        price: 899,
+        image: 'https://m.media-amazon.com/images/I/71+e7-w2M6L._SL1500_.jpg',
+        rating: 4.5,
+        description: 'Achieve precise measurements for your recipes with this accurate digital kitchen scale. Features a clear LCD display, tare function and multiple unit conversions. Ideal for baking, cooking, and portion control.'
+      },
+      {
+        id: '8',
+        name: 'Men\'s Casual Cotton T-Shirt',
+        category: 'Apparel',
+        price: 499,
+        image: 'https://m.media-amazon.com/images/I/71-tH2hO03L._AC_SY300_SX300_QL70_FMwebp_.jpg',
+        rating: 4.0,
+        description: 'Comfortable and stylish, this classic cotton t-shirt is a wardrobe essential. Available in various colors and sizes, it’s perfect for everyday wear, casual outings, or layering.'
+      },
+      {
+        id: '9',
+        name: 'Women\'s Running Shoes',
+        category: 'Apparel',
+        price: 1999,
+        image: 'https://m.media-amazon.com/images/I/71j2+N+p2CL._AC_SY300_SX300_QL70_FMwebp_.jpg',
+        rating: 4.4,
+        description: 'Designed for comfort and performance, these lightweight running shoes offer excellent cushioning and support. Ideal for daily runs, gym workouts, or casual athletic wear.'
+      },
+      {
+        id: '10',
+        name: 'Kids\' Educational Building Blocks Set',
+        category: 'Toys & Games',
+        price: 1299,
+        image: 'https://m.media-amazon.com/images/I/81x8JvjQdnL._SL1500_.jpg',
+        rating: 4.7,
+        description: 'Spark creativity and develop fine motor skills with this colorful building blocks set. Contains various shapes and sizes for endless construction possibilities. Suitable for children aged 3 and up.'
+      },
+      {
+        id: '11',
+        name: 'Classic Board Game: Strategy & Fun for Family',
+        category: 'Toys & Games',
+        price: 999,
+        image: 'https://m.media-amazon.com/images/I/71L0IeL0+pL._SL1500_.jpg',
+        rating: 4.1,
+        description: 'Gather your family for an evening of fun with this classic board game. Easy to learn but challenging to master, it guarantees hours of strategic entertainment for all ages.'
+      },
+      {
+        id: '12',
+        name: 'Bose QuietComfort 35 II Noise Cancelling Headphones',
+        category: 'Electronics',
+        price: 29900,
+        image: 'https://m.media-amazon.com/images/I/81+bG4hSjTL._SL1500_.jpg',
+        rating: 4.8,
+        description: 'Renowned noise cancellation, balanced audio performance, and comfortable fit. These headphones are perfect for travel, work, and everyday listening, providing an immersive audio experience.'
+      },
+      {
+        id: '13',
+        name: 'Sony WH-1000XM4 Wireless Noise-Cancelling Headphones',
+        category: 'Electronics',
+        price: 27990,
+        image: 'https://m.media-amazon.com/images/I/71o8Q5X+k2L._SL1500_.jpg',
+        rating: 4.7,
+        description: 'Industry-leading noise cancellation, exceptional sound quality, and smart features like Speak-to-Chat. Experience personalized listening with these premium over-ear headphones.'
+      },
+      {
+        id: '14',
+        name: 'Apple AirPods Pro (2nd Generation)',
+        category: 'Electronics',
+        price: 24900,
+        image: 'https://m.media-amazon.com/images/I/61SUj2ZzmWL._SL1500_.jpg',
+        rating: 4.6,
+        description: 'Enhanced Active Noise Cancellation, Adaptive Transparency, and Spatial Audio for an immersive sound experience. Comes with a MagSafe Charging Case with built-in speaker and lanyard loop.'
+      },
+      {
+        id: '15',
+        name: 'Samsung Galaxy Buds2 Pro',
+        category: 'Electronics',
+        price: 17999,
+        image: 'https://m.media-amazon.com/images/I/71SUh2WcCRL._SL1500_.jpg',
+        rating: 4.5,
+        description: 'Hi-Fi sound, intelligent Active Noise Cancellation, and comfortable fit. These earbuds provide an exceptional listening experience with seamless connectivity to your Samsung Galaxy devices.'
+      },
+      {
+        id: '16',
+        name: 'Google Pixel Buds Pro',
+        category: 'Electronics',
+        price: 16999,
+        image: 'https://m.media-amazon.com/images/I/61SUj2ZzmWL._SL1500_.jpg',
+        rating: 4.4,
+        description: 'Premium active noise cancellation, clear calls, and a comfortable design. Enjoy rich, full sound and seamless integration with your Android devices.'
+      },
+      {
+        id: '17',
+        name: 'JBL Flip 6 Portable Waterproof Speaker',
+        category: 'Electronics',
+        price: 11999,
+        image: 'https://m.media-amazon.com/images/I/71+k3-x+hGL._SL1500_.jpg',
+        rating: 4.7,
+        description: 'Bold JBL Original Pro Sound, IP67 waterproof and dustproof design, and 12 hours of playtime. Take your music anywhere with this powerful and portable Bluetooth speaker.'
+      },
+      {
+        id: '18',
+        name: 'Anker Soundcore Flare 2 Bluetooth Speaker',
+        category: 'Electronics',
+        price: 6999,
+        image: 'https://m.media-amazon.com/images/I/61kG8v+bEHL._SL1500_.jpg',
+        rating: 4.6,
+        description: '360° immersive sound, customizable ambient light, and IPX7 waterproof rating. Perfect for parties, outdoor adventures, or adding ambiance to any room.'
+      },
+      {
+        id: '19',
+        name: 'Echo Dot (5th Gen) with clock',
+        category: 'Electronics',
+        price: 5499,
+        image: 'https://m.media-amazon.com/images/I/61SUj2ZzmWL._SL1500_.jpg',
+        rating: 4.5,
+        description: 'Our best-sounding Echo Dot with an improved LED display. Enjoy enhanced audio, control your smart home, and get help from Alexa. The clock display makes it perfect for your bedside table.'
+      },
+      {
+        id: '20',
+        name: 'Fire TV Stick 4K Max',
+        category: 'Electronics',
+        price: 6499,
+        image: 'https://m.media-amazon.com/images/I/61SUj2ZzmWL._SL1500_.jpg',
+        rating: 4.7,
+        description: 'Our most powerful streaming stick, with support for Wi-Fi 6, 4K Ultra HD, Dolby Vision, HDR, and immersive Dolby Atmos audio. Enjoy fast app starts and fluid navigation.'
+      },
+      {
+        id: '21',
+        name: 'Kindle Paperwhite (11th Gen)',
+        category: 'Electronics',
+        price: 13999,
+        image: 'https://m.media-amazon.com/images/I/61SUj2ZzmWL._SL1500_.jpg',
+        rating: 4.8,
+        description: 'Read comfortably with a 6.8” display, thinner borders, adjustable warm light, and up to 10 weeks of battery life. Waterproof design means you can read anywhere.'
+      },
+      {
+        id: '22',
+        name: 'Philips Hue White and Color Ambiance Smart Bulb',
+        category: 'Electronics',
+        price: 2499,
+        image: 'https://m.media-amazon.com/images/I/61SUj2ZzmWL._SL1500_.jpg',
+        rating: 4.3,
+        description: 'Set the mood with millions of colors and shades of white light. Control with your voice, the Hue app, or smart accessories. Requires a Hue Bridge for full functionality.'
+      },
+      {
+        id: '23',
+        name: 'TP-Link Kasa Smart Plug Mini (2-pack)',
+        category: 'Electronics',
+        price: 1999,
+        image: 'https://m.media-amazon.com/images/I/61SUj2ZzmWL._SL1500_.jpg',
+        rating: 4.6,
+        description: 'Turn electronics on/off from anywhere with your smartphone using the Kasa Smart app. Schedule lights, fans, and appliances to turn on/off automatically. Voice control with Alexa and Google Assistant.'
+      },
+      {
+        id: '24',
+        name: 'Samsung 4K Ultra HD Smart LED TV',
+        category: 'Electronics',
+        price: 45000,
+        image: 'https://m.media-amazon.com/images/I/71RxC+o9hHL._SL1500_.jpg',
+        rating: 4.7,
+        description: 'Experience stunning 4K clarity and vibrant colors with this smart LED TV. Features built-in Wi-Fi, popular streaming apps, and multiple HDMI/USB ports for all your entertainment needs.'
+      },
+      {
+        id: '25',
+        name: 'LG OLED evo C3 Series 4K UHD Smart TV',
+        category: 'Electronics',
+        price: 120000,
+        image: 'https://m.media-amazon.com/images/I/71tQ0M+z-fL._SL1500_.jpg',
+        rating: 4.9,
+        description: 'Self-lit pixels for unparalleled blacks and incredible contrast. α9 Gen6 AI Processor 4K, Dolby Vision, and Dolby Atmos for a truly immersive viewing experience. Ideal for movies, gaming, and sports.'
+      },
+      {
+        id: '26',
+        name: 'Dell XPS 15 Laptop',
+        category: 'Electronics',
+        price: 150000,
+        image: 'https://m.media-amazon.com/images/I/71c5j9-fFmL._SL1500_.jpg',
+        rating: 4.6,
+        description: 'Powerful performance, stunning InfinityEdge display, and sleek design. Perfect for creative professionals, students, and anyone needing a high-performance laptop for demanding tasks.'
+      },
+      {
+        id: '27',
+        name: 'HP Spectre x360 Convertible Laptop',
+        category: 'Electronics',
+        price: 130000,
+        image: 'https://m.media-amazon.com/images/I/71c5j9-fFmL._SL1500_.jpg',
+        rating: 4.5,
+        description: 'Versatile 2-in-1 design, powerful performance, and premium features. Perfect for productivity and entertainment on the go.'
+      },
+      {
+        id: '28',
+        name: 'Apple MacBook Air M2',
+        category: 'Electronics',
+        price: 115000,
+        image: 'https://m.media-amazon.com/images/I/71c5j9-fFmL._SL1500_.jpg',
+        rating: 4.8,
+        description: 'Thin, light, and incredibly fast with the Apple M2 chip. Fanless design for silent operation, stunning Liquid Retina display, and all-day battery life. Ideal for everyday tasks and creative work.'
+      },
+      {
+        id: '29',
+        name: 'Samsung Galaxy S24 Ultra',
+        category: 'Electronics',
+        price: 129999,
+        image: 'https://m.media-amazon.com/images/I/71SUh2WcCRL._SL1500_.jpg',
+        rating: 4.7,
+        description: 'Pro-grade camera system, powerful processor, and S Pen built-in. Capture stunning photos and videos, power through demanding tasks, and unleash your creativity.'
+      },
+      {
+        id: '30',
+        name: 'Google Pixel 8 Pro',
+        category: 'Electronics',
+        price: 99999,
+        image: 'https://m.media-amazon.com/images/I/61SUj2ZzmWL._SL1500_.jpg',
+        rating: 4.6,
+        description: 'Advanced camera system, Google Tensor G3 chip for AI-powered features, and all-day battery. Experience the best of Google in a sleek and durable design.'
+      },
+      {
+        id: '31',
+        name: 'OnePlus 12',
+        category: 'Electronics',
+        price: 64999,
+        image: 'https://m.media-amazon.com/images/I/71SUh2WcCRL._SL1500_.jpg',
+        rating: 4.5,
+        description: 'Flagship performance, stunning display, and super-fast charging. Experience smooth performance, vibrant visuals, and never worry about running out of battery.'
+      },
+      {
+        id: '32',
+        name: 'Xiaomi 14 Ultra',
+        category: 'Electronics',
+        price: 99999,
+        image: 'https://m.media-amazon.com/images/I/71SUh2WcCRL._SL1500_.jpg',
+        rating: 4.6,
+        description: 'Revolutionary camera system co-engineered with Leica, cutting-edge performance, and premium design. Capture professional-grade photos and videos, and experience unparalleled speed.'
+      },
+      {
+        id: '33',
+        name: 'Nothing Phone (2)',
+        category: 'Electronics',
+        price: 44999,
+        image: 'https://m.media-amazon.com/images/I/61SUj2ZzmWL._SL1500_.jpg',
+        rating: 4.3,
+        description: 'Unique Glyph Interface, powerful performance, and clean Android experience. Stand out from the crowd with this innovative and stylish smartphone.'
+      },
+      {
+        id: '34',
+        name: 'Dyson V11 Absolute Pro Cord-Free Vacuum',
+        category: 'Home & Office',
+        price: 52900,
+        image: 'https://m.media-amazon.com/images/I/61-d7+pC0iL._SL1500_.jpg',
+        rating: 4.8,
+        description: 'Powerful suction for whole-home cleaning, intelligent reports, and versatile attachments. Makes cleaning effortless and efficient.'
+      },
+      {
+        id: '35',
+        name: 'Roomba i7+ Robot Vacuum with Automatic Dirt Disposal',
+        category: 'Home & Office',
+        price: 69900,
+        image: 'https://m.media-amazon.com/images/I/61-d7+pC0iL._SL1500_.jpg',
+        rating: 4.6,
+        description: 'Empties itself into an enclosed bag, learns your home, and cleans specific areas. Enjoy hands-free cleaning and a consistently spotless home.'
+      },
+      {
+        id: '36',
+        name: 'Blueair Classic 480i Air Purifier',
+        category: 'Home & Office',
+        price: 32900,
+        image: 'https://m.media-amazon.com/images/I/61-d7+pC0iL._SL1500_.jpg',
+        rating: 4.5,
+        description: 'Removes 99.97% of airborne particles, including allergens, dust, mold, and pet dander. Breathe cleaner, healthier air with this high-performance air purifier.'
+      },
+      {
+        id: '37',
+        name: 'Philips SmartSleep Wake-up Light',
+        category: 'Home & Office',
+        price: 12999,
+        image: 'https://m.media-amazon.com/images/I/61-d7+pC0iL._SL1500_.jpg',
+        rating: 4.4,
+        description: 'Simulates a natural sunrise to wake you gradually, with personalized light and sound settings. Improve your energy levels and mood with a gentle wake-up experience.'
+      },
+      {
+        id: '38',
+        name: 'AeroPress Go Portable Travel Coffee Press',
+        category: 'Kitchen & Dining',
+        price: 2999,
+        image: 'https://m.media-amazon.com/images/I/61-d7+pC0iL._SL1500_.jpg',
+        rating: 4.8,
+        description: 'Compact, lightweight, and rapidly brews delicious coffee anywhere. Perfect for travel, camping, or quick coffee fixes at home.'
+      },
+      {
+        id: '39',
+        name: 'Vitamix Ascent Series A2500 Blender',
+        category: 'Kitchen & Dining',
+        price: 45000,
+        image: 'https://m.media-amazon.com/images/I/71YyLh8jYgL._SL1500_.jpg',
+        rating: 4.9,
+        description: 'Powerful motor, variable speed control, and smart features for effortless blending. Create smoothies, soups, frozen desserts, and more with professional-grade results.'
+      },
+      {
+        id: '40',
+        name: 'Instant Pot Duo 7-in-1 Electric Pressure Cooker',
+        category: 'Kitchen & Dining',
+        price: 8999,
+        image: 'https://m.media-amazon.com/images/I/71YyLh8jYgL._SL1500_.jpg',
+        rating: 4.7,
+        description: 'Combines 7 kitchen appliances in one, for fast and easy cooking. Pressure cook, slow cook, rice cook, yogurt maker, steamer, sauté pan, and food warmer.'
+      },
+      {
+        id: '41',
+        name: 'Lodge Cast Iron Skillet (10.25-inch)',
+        category: 'Kitchen & Dining',
+        price: 2499,
+        image: 'https://m.media-amazon.com/images/I/71YyLh8jYgL._SL1500_.jpg',
+        rating: 4.8,
+        description: 'Pre-seasoned and ready to use, this versatile skillet is perfect for searing, frying, baking, and more. Durable construction for a lifetime of cooking.'
+      },
+      {
+        id: '42',
+        name: 'Anova Culinary Sous Vide Precision Cooker',
+        category: 'Kitchen & Dining',
+        price: 12999,
+        image: 'https://m.media-amazon.com/images/I/71YyLh8jYgL._SL1500_.jpg',
+        rating: 4.6,
+        description: 'Achieve perfect results every time with this precise sous vide cooker. Cook food to exact temperatures for incredible tenderness and flavor.'
+      },
+      {
+        id: '43',
+        name: 'The North Face Men\'s Apex Bionic 2 Jacket',
+        category: 'Apparel',
+        price: 7999,
+        image: 'https://m.media-amazon.com/images/I/71j2+N+p2CL._AC_SY300_SX300_QL70_FMwebp_.jpg',
+        rating: 4.5,
+        description: 'Windproof, water-resistant, and breathable, this softshell jacket is perfect for outdoor adventures. Provides comfort and protection in various weather conditions.'
+      },
+      {
+        id: '44',
+        name: 'Columbia Women\'s Arcadia II Jacket',
+        category: 'Apparel',
+        price: 6499,
+        image: 'https://m.media-amazon.com/images/I/71j2+N+p2CL._AC_SY300_SX300_QL70_FMwebp_.jpg',
+        rating: 4.3,
+        description: 'Waterproof and breathable, this lightweight rain jacket is ideal for hiking, camping, or everyday wear. Packs into its own pocket for easy portability.'
+      },
+      {
+        id: '45',
+        name: 'Levi\'s Men\'s 501 Original Fit Jeans',
+        category: 'Apparel',
+        price: 2999,
+        image: 'https://m.media-amazon.com/images/I/71-tH2hO03L._AC_SY300_SX300_QL70_FMwebp_.jpg',
+        rating: 4.6,
+        description: 'The iconic straight fit with the signature button fly. A timeless classic that’s built to last and only gets better with age.'
+      },
+      {
+        id: '46',
+        name: 'Hanes Women\'s Perfect-T Short Sleeve T-Shirt (2-pack)',
+        category: 'Apparel',
+        price: 899,
+        image: 'https://m.media-amazon.com/images/I/71j2+N+p2CL._AC_SY300_SX300_QL70_FMwebp_.jpg',
+        rating: 4.2,
+        description: 'Soft, comfortable, and versatile t-shirts for everyday wear. Perfect for layering or wearing on their own.'
+      },
+      {
+        id: '47',
+        name: 'Adidas Men\'s Ultraboost 22 Running Shoes',
+        category: 'Apparel',
+        price: 14999,
+        image: 'https://m.media-amazon.com/images/I/71j2+N+p2CL._AC_SY300_SX300_QL70_FMwebp_.jpg',
+        rating: 4.7,
+        description: 'Responsive cushioning, comfortable fit, and excellent traction for an energized run. Designed for daily training and long distances.'
+      },
+      {
+        id: '48',
+        name: 'Nike Women\'s Revolution 6 Next Nature Running Shoes',
+        category: 'Apparel',
+        price: 5999,
+        image: 'https://m.media-amazon.com/images/I/71j2+N+p2CL._AC_SY300_SX300_QL70_FMwebp_.jpg',
+        rating: 4.4,
+        description: 'Lightweight, flexible, and comfortable, these shoes are perfect for your daily runs or casual wear. Made with at least 20% recycled content by weight.'
+      },
+      {
+        id: '49',
+        name: 'LEGO Creator Expert: NASA Apollo 11 Lunar Lander',
+        category: 'Toys & Games',
+        price: 8999,
+        image: 'https://m.media-amazon.com/images/I/81x8JvjQdnL._SL1500_.jpg',
+        rating: 4.9,
+        description: 'A detailed replica of the Apollo 11 Lunar Lander, perfect for space enthusiasts and LEGO fans. Features detachable ascent and descent stages and display base.'
+      },
+      {
+        id: '50',
+        name: 'Catan Board Game',
+        category: 'Toys & Games',
+        price: 2999,
+        image: 'https://m.media-amazon.com/images/I/71L0IeL0+pL._SL1500_.jpg',
+        rating: 4.7,
+        description: 'A classic strategy game of trading and building. Explore the island of Catan, gather resources, and build your settlements to become the dominant player.'
+      },
+      {
+        id: '51',
+        name: 'Monopoly Classic Board Game',
+        category: 'Toys & Games',
+        price: 1499,
+        image: 'https://m.media-amazon.com/images/I/71L0IeL0+pL._SL1500_.jpg',
+        rating: 4.0,
+        description: 'The fast-dealing property trading game where you buy, sell, and trade to win. Build your empire and bankrupt your opponents.'
+      },
+      {
+        id: '52',
+        name: 'Exploding Kittens Card Game',
+        category: 'Toys & Games',
+        price: 1299,
+        image: 'https://m.media-amazon.com/images/I/71L0IeL0+pL._SL1500_.jpg',
+        rating: 4.5,
+        description: 'A highly strategic, kitty-powered version of Russian Roulette. Players draw cards until someone draws an Exploding Kitten, at which point they explode and are out of the game, unless they have a Defuse card.'
+      },
+      {
+        id: '53',
+        name: 'Nintendo Switch Lite',
+        category: 'Electronics',
+        price: 19999,
+        image: 'https://m.media-amazon.com/images/I/61SUj2ZzmWL._SL1500_.jpg',
+        rating: 4.7,
+        description: 'A compact, lightweight Nintendo Switch system designed specifically for handheld play. Enjoy your favorite games on the go.'
+      },
+      {
+        id: '54',
+        name: 'PlayStation 5 Console',
+        category: 'Electronics',
+        price: 54999,
+        image: 'https://m.media-amazon.com/images/I/61SUj2ZzmWL._SL1500_.jpg',
+        rating: 4.8,
+        description: 'Experience lightning-fast loading with an ultra-high speed SSD, deeper immersion with support for haptic feedback, adaptive triggers, and 3D Audio, and an all-new generation of incredible PlayStation games.'
+      },
+      {
+        id: '55',
+        name: 'Xbox Series X',
+        category: 'Electronics',
+        price: 52999,
+        image: 'https://m.media-amazon.com/images/I/61SUj2ZzmWL._SL1500_.jpg',
+        rating: 4.7,
+        description: 'The fastest, most powerful Xbox ever. Experience 4K gaming at up to 120 frames per second, advanced 3D spatial sound, and more.'
+      },
+      {
+        id: '56',
+        name: 'Samsung 970 EVO Plus NVMe M.2 SSD 1TB',
+        category: 'Electronics',
+        price: 7999,
+        image: 'https://m.media-amazon.com/images/I/61SUj2ZzmWL._SL1500_.jpg',
+        rating: 4.9,
+        description: 'Unleash the power of PCIe NVMe SSD for computing with incredible speeds. Ideal for high-end gaming and 4K video editing.'
+      },
+      {
+        id: '57',
+        name: 'Crucial MX500 1TB SATA III 3D NAND Internal SSD',
+        category: 'Electronics',
+        price: 5999,
+        image: 'https://m.media-amazon.com/images/I/61SUj2ZzmWL._SL1500_.jpg',
+        rating: 4.8,
+        description: 'Start your system in seconds, load files instantly, and accelerate the most demanding applications with the Crucial MX500.'
+      },
+      {
+        id: '58',
+        name: 'WD My Passport 2TB Portable External Hard Drive',
+        category: 'Electronics',
+        price: 6999,
+        image: 'https://m.media-amazon.com/images/I/61SUj2ZzmWL._SL1500_.jpg',
+        rating: 4.6,
+        description: 'Reliable, portable storage for your photos, videos, music, and documents. Password protection and hardware encryption keep your content secure.'
+      },
+      {
+        id: '59',
+        name: 'Seagate Portable 5TB External Hard Drive',
+        category: 'Electronics',
+        price: 10999,
+        image: 'https://m.media-amazon.com/images/I/61SUj2ZzmWL._SL1500_.jpg',
+        rating: 4.5,
+        description: 'Easily store and access 5TB to go with the Seagate Portable Drive, a USB external hard drive. Simple drag-and-drop functionality.'
+      },
+      {
+        id: '60',
+        name: 'SanDisk 128GB Ultra Dual Drive Go USB Type-C',
+        category: 'Electronics',
+        price: 1499,
+        image: 'https://m.media-amazon.com/images/I/61SUj2ZzmWL._SL1500_.jpg',
+        rating: 4.7,
+        description: 'Seamlessly move files between your USB Type-C smartphone, tablets, and Macs and USB Type-A computers.'
+      },
+      // New Products for Books Category
+      {
+        id: '61',
+        name: 'The Alchemist by Paulo Coelho',
+        category: 'Books',
+        price: 399,
+        image: 'https://m.media-amazon.com/images/I/71aFt4+HwIL._SL1500_.jpg',
+        rating: 4.6,
+        description: 'An allegorical novel by Paulo Coelho about a young Andalusian shepherd boy named Santiago who journeys in search of a worldly treasure. A timeless tale about the importance of following your dreams.'
+      },
+      {
+        id: '62',
+        name: 'Atomic Habits by James Clear',
+        category: 'Books',
+        price: 599,
+        image: 'https://m.media-amazon.com/images/I/81w+C7r+vRL._SL1500_.jpg',
+        rating: 4.9,
+        description: 'An acclaimed self-help book that provides a proven framework for improving every day. James Clear, an expert on habit formation, reveals practical strategies that will teach you exactly how to form good habits, break bad ones, and master the tiny behaviors that lead to remarkable results.'
+      },
+      {
+        id: '63',
+        name: 'The Psychology of Money by Morgan Housel',
+        category: 'Books',
+        price: 450,
+        image: 'https://m.media-amazon.com/images/I/71Y0Z61+2EL._SL1500_.jpg',
+        rating: 4.7,
+        description: 'Doing well with money isn’t necessarily about what you know. It’s about how you behave. And behavior is hard to teach, even to really smart people. This book shares 19 short stories exploring the strange ways people think about money and teaches you how to make better sense of one of life’s most important topics.'
+      },
+      // New Products for Health & Beauty Category
+      {
+        id: '64',
+        name: 'Organic Vitamin C Serum for Face',
+        category: 'Health & Beauty',
+        price: 899,
+        image: 'https://m.media-amazon.com/images/I/61-gR0m-K+L._SL1500_.jpg',
+        rating: 4.5,
+        description: 'Brighten and even your skin tone with this powerful organic Vitamin C serum. Formulated with natural ingredients to reduce dark spots and enhance radiance.'
+      },
+      {
+        id: '65',
+        name: 'Natural Aloe Vera Gel (Pure & Soothing)',
+        category: 'Health & Beauty',
+        price: 349,
+        image: 'https://m.media-amazon.com/images/I/61r-G-x-tL._SL1500_.jpg',
+        rating: 4.8,
+        description: '100% pure aloe vera gel for soothing skin, moisturizing, and after-sun care. Free from parabens and artificial fragrances.'
+      },
+      {
+        id: '66',
+        name: 'Dandruff Control Shampoo with Tea Tree Oil',
+        category: 'Health & Beauty',
+        price: 499,
+        image: 'https://m.media-amazon.com/images/I/71c8+Y+2qL._SL1500_.jpg',
+        rating: 4.2,
+        description: 'Effectively controls dandruff and soothes itchy scalp with the natural power of tea tree oil. Leaves hair feeling clean and refreshed.'
+      },
+      // New Products for Sports & Outdoors Category
+      {
+        id: '67',
+        name: 'Yoga Mat with Carrying Strap',
+        category: 'Sports & Outdoors',
+        price: 1299,
+        image: 'https://m.media-amazon.com/images/I/71jY+g-gL._SL1500_.jpg',
+        rating: 4.4,
+        description: 'Premium non-slip yoga mat, perfect for all types of yoga, Pilates, and floor exercises. Comes with a convenient carrying strap.'
+      },
+      {
+        id: '68',
+        name: 'Lightweight Hiking Backpack (30L)',
+        category: 'Sports & Outdoors',
+        price: 2499,
+        image: 'https://m.media-amazon.com/images/I/71b+x-y+zL._SL1500_.jpg',
+        rating: 4.6,
+        description: 'Durable and lightweight 30-liter hiking backpack with multiple compartments and ergonomic design for comfortable long treks.'
+      },
+      {
+        id: '69',
+        name: 'Stainless Steel Camping Cookware Set',
+        category: 'Sports & Outdoors',
+        price: 1899,
+        image: 'https://m.media-amazon.com/images/I/71d+e+f+gL._SL1500_.jpg',
+        rating: 4.5,
+        description: 'Compact and sturdy stainless steel cookware set for camping and backpacking. Includes pots, pans, and utensils for outdoor cooking.'
+      },
+      // Added new products for Sports & Outdoors
+      {
+        id: '70',
+        name: '2-Person Dome Camping Tent',
+        category: 'Sports & Outdoors',
+        price: 3499,
+        image: 'https://placehold.co/300x300/A0A0A0/FFFFFF?text=Camping+Tent',
+        rating: 4.3,
+        description: 'Easy to set up and lightweight, this 2-person dome tent is perfect for weekend camping trips. Features good ventilation and weather protection.'
+      },
+      {
+        id: '71',
+        name: 'Men\'s Waterproof Hiking Boots',
+        category: 'Sports & Outdoors',
+        price: 4999,
+        image: 'https://placehold.co/300x300/A0A0A0/FFFFFF?text=Hiking+Boots',
+        rating: 4.6,
+        description: 'Durable and comfortable waterproof hiking boots designed for challenging trails. Provides excellent ankle support and grip on various terrains.'
+      },
+      {
+        id: '72',
+        name: '21-Speed Mountain Bicycle',
+        category: 'Sports & Outdoors',
+        price: 12999,
+        image: 'https://placehold.co/300x300/A0A0A0/FFFFFF?text=Mountain+Bicycle',
+        rating: 4.2,
+        description: 'A robust 21-speed mountain bicycle with front suspension, ideal for off-road adventures and daily commutes. Enjoy a smooth and powerful ride.'
+      },
+      // Added new products for Kitchen & Dining
+      {
+        id: '73',
+        name: 'Automatic Drip Coffee Maker (12-Cup)',
+        category: 'Kitchen & Dining',
+        price: 2199,
+        image: 'https://placehold.co/300x300/A0A0A0/FFFFFF?text=Coffee+Maker',
+        rating: 4.4,
+        description: 'Brew delicious coffee effortlessly with this automatic drip coffee maker. Features a 12-cup capacity, programmable timer, and auto-shutoff for convenience.'
+      },
+      {
+        id: '74',
+        name: 'Compact 2-Slice Toaster',
+        category: 'Kitchen & Dining',
+        price: 1199,
+        image: 'https://placehold.co/300x300/A0A0A0/FFFFFF?text=Toaster',
+        rating: 4.1,
+        description: 'Toast bread, bagels, and more to perfection with this compact 2-slice toaster. Features wide slots, multiple browning settings, and a removable crumb tray.'
+      },
+      {
+        id: '75',
+        name: 'Professional Chef Knife Set (5-Piece)',
+        category: 'Kitchen & Dining',
+        price: 3999,
+        image: 'https://placehold.co/300x300/A0A0A0/FFFFFF?text=Knife+Set',
+        rating: 4.7,
+        description: 'A high-quality 5-piece chef knife set for all your culinary needs. Made from durable stainless steel with ergonomic handles for comfortable and precise cutting.'
+      }
+    ];
+
+    const categories = [
+        'All',
+        'Electronics 📱',
+        'Home & Office 🏠',
+        'Kitchen & Dining 🍽️',
+        'Apparel 👕',
+        'Toys & Games 🎲',
+        'Books 📚',
+        'Health & Beauty 💄',
+        'Sports & Outdoors 🏞️'
+    ];
+
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+    let orders = JSON.parse(localStorage.getItem('orders')) || [];
+    let loggedInUser = JSON.parse(localStorage.getItem('loggedInUser')) || null;
+    let isDarkMode = JSON.parse(localStorage.getItem('darkMode')) || false;
+
+    // Possible order statuses for tracking
+    const orderStatuses = ['Processing', 'Shipped', 'Out for Delivery', 'Delivered', 'Return Requested', 'Refund Processed', 'Cancelled'];
+
+
+    /**
+     * Saves the current state of cart, wishlist, orders, loggedInUser, and darkMode to localStorage.
+     */
+    function saveState() {
+      localStorage.setItem('cart', JSON.stringify(cart));
+      localStorage.setItem('wishlist', JSON.stringify(wishlist));
+      localStorage.setItem('orders', JSON.stringify(orders));
+      localStorage.setItem('loggedInUser', JSON.stringify(loggedInUser));
+      localStorage.setItem('darkMode', JSON.stringify(isDarkMode));
+    }
+
+    /**
+     * Loads the state from localStorage and applies the theme and updates auth buttons.
+     */
+    function loadState() {
+      applyTheme(isDarkMode);
+      updateAuthButtons();
+      populateOrders(); // Load orders when state is loaded
+    }
+
+    /**
+     * Applies the selected theme (dark or light) to the body.
+     * @param {boolean} dark - True for dark mode, false for light mode.
+     */
+    function applyTheme(dark) {
+      if (dark) {
+        document.body.classList.add('dark-mode');
+        document.getElementById('checkbox').checked = true;
+      } else {
+        document.body.classList.remove('dark-mode');
+        document.getElementById('checkbox').checked = false;
+      }
+    }
+
+    // Event listener for theme toggle checkbox
+    document.getElementById('checkbox').addEventListener('change', (event) => {
+      isDarkMode = event.target.checked;
+      applyTheme(isDarkMode);
+      saveState();
+    });
+
+
+    /**
+     * Displays a toast message to the user.
+     * @param {string} message - The message to display.
+     */
+    function showToast(message) {
+      const toast = document.getElementById('toastMessage');
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000); // Hide after 3 seconds
+    }
+
+    /**
+     * Opens a specified modal.
+     * @param {string} modalId - The ID of the modal to open.
+     */
+    function openModal(modalId) {
+      document.getElementById(modalId).style.display = 'block';
+      // Populate modal content when opened
+      if (modalId === 'cartModal') {
+        populateCart();
+      } else if (modalId === 'wishlistModal') {
+        populateWishlist();
+      } else if (modalId === 'orderHistoryModal') {
+        populateOrders();
+      }
+      // No specific populate needed for productDetailModal, orderFormModal, loginModal, createAccountModal as they are populated before calling openModal
+      else if (modalId === 'userProfileModal') {
+        populateUserProfileModal();
+      }
+    }
+
+    /**
+     * Closes a specified modal.
+     * @param {string} modalId - The ID of the modal to close.
+     */
+    function closeModal(modalId) {
+      document.getElementById(modalId).style.display = 'none';
+    }
+
+    // Closes modals when clicking outside of them
+    window.onclick = function(event) {
+      if (event.target.classList.contains('modal')) {
+        event.target.style.display = 'none';
+      }
+    }
+
+    /**
+     * Updates the counts for cart, wishlist, and orders in the header.
+     */
+    function updateCounts() {
+      document.getElementById('cartCount').textContent = cart.length;
+      document.getElementById('wishlistCount').textContent = wishlist.length;
+      document.getElementById('ordersCount').textContent = orders.filter(order => loggedInUser && order.userId === loggedInUser.email).length; // Update orders count for logged in user
+    }
+
+    /**
+     * Dynamically populates the category slider.
+     */
+    function populateCategories() {
+      const categorySlider = document.getElementById('categorySlider');
+      categorySlider.innerHTML = ''; // Clear existing categories
+      categories.forEach(category => {
+        const div = document.createElement('div');
+        div.classList.add('category-item');
+        div.textContent = category;
+        div.setAttribute('onclick', `selectCategory('${category}')`);
+        categorySlider.appendChild(div);
+      });
+      selectCategory('All'); // Select 'All' by default on load
+    }
+
+    let currentCategory = 'All'; // Tracks the currently selected category
+
+    /**
+     * Handles category selection and updates the active category.
+     * @param {string} categoryWithEmoji - The selected category string including emoji.
+     */
+    function selectCategory(categoryWithEmoji) {
+      currentCategory = categoryWithEmoji;
+      const categoryItems = document.querySelectorAll('.category-item');
+      categoryItems.forEach(item => {
+        if (item.textContent === categoryWithEmoji) {
+          item.classList.add('active');
+        } else {
+          item.classList.remove('active');
+        }
+      });
+      applyFilters(); // Re-apply filters based on new category
+    }
+
+    /**
+     * Generates star rating string based on a given rating.
+     * @param {number} rating - The rating value.
+     * @returns {string} - Star rating string (e.g., '⭐⭐⭐⭐☆').
+     */
+    function getStarRating(rating) {
+      const fullStars = Math.floor(rating);
+      const halfStar = rating % 1 >= 0.5 ? '⭐' : '';
+      const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+      return '⭐'.repeat(fullStars) + halfStar + '☆'.repeat(emptyStars);
+    }
+
+    /**
+     * Filters and displays products based on search input and selected category.
+     */
+    function applyFilters() {
+      const searchInput = document.getElementById('searchInput').value.toLowerCase();
+      // Extract the plain category name from the currentCategory (e.g., "Books 📚" becomes "Books")
+      // This regex removes common emojis.
+      const plainCategory = currentCategory.replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F1E0}-\u{1F1FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F900}-\u{1F9FF}\u{1F000}-\u{1F02F}\u{1F0A0}-\u{1F0FF}\u{1F200}-\u{1F25F}\u{1F300}-\u{1F5FF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1F700}-\u{1F77F}\u{1F780}-\u{1F7FF}\u{1F800}-\u{1F8FF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{2B50}\u{23CF}\u{23E9}\u{23EA}\u{23F0}\u{23F3}\u{25AA}\u{25AB}\u{25FB}\u{25FC}\u{25FD}\u{25FE}\u{261D}\u{263A}\u{2648}-\u{2653}\u{26AA}\u{26AB}\u{26BD}\u{26BE}\u{26C4}\u{26C5}\u{26CE}\u{26D4}\u{26EA}\u{26F2}\u{26F3}\u{26F5}\u{26FA}\u{26FD}\u{2705}\u{270A}\u{270B}\u{270C}\u{270D}\u{270F}\u{2712}\u{2714}\u{2716}\u{2728}\u{274C}\u{274E}\u{2753}\u{2754}\u{2755}\u{2757}\u{2795}\u{2796}\u{2797}\u{27A1}\u{27B0}\u{27BF}\u{2B06}\u{2B07}\u{2B05}\u{2B1B}\u{2B1C}\u{2B55}\u{3030}\u{303D}\u{3297}\u{3299}]/gu, '').trim();
+
+      const productsGrid = document.getElementById('productsGrid');
+      productsGrid.innerHTML = ''; // Clear existing products
+
+      const filteredProducts = products.filter(product => {
+        const matchesCategory = plainCategory === 'All' || product.category === plainCategory;
+        const matchesSearch = product.name.toLowerCase().includes(searchInput) ||
+                              product.description.toLowerCase().includes(searchInput);
+        return matchesCategory && matchesSearch;
+      });
+
+      if (filteredProducts.length === 0) {
+        productsGrid.innerHTML = '<p style="text-align: center; width: 100%; color: var(--body-color);">No products found matching your criteria.</p>';
+        return;
+      }
+
+      filteredProducts.forEach(product => {
+        const productCard = document.createElement('div');
+        productCard.classList.add('product-card');
+        productCard.setAttribute('onclick', `openProductDetailModal('${product.id}')`);
+
+        // Check if product is in cart or wishlist to update button text/state
+        const isInCart = cart.some(item => item.id === product.id);
+        const isInWishlist = wishlist.some(item => item.id === product.id);
+
+        productCard.innerHTML = `
+          <img src="${product.image}" alt="${product.name}" class="product-image" onerror="this.onerror=null; this.src='https://placehold.co/300x300/CCCCCC/000000?text=Image+Error';">
+          <div class="product-title">${product.name}</div>
+          <div class="product-price">₹${product.price.toLocaleString('en-IN')}</div>
+          <div class="product-rating">${getStarRating(product.rating)} (${product.rating})</div>
+          <div class="buttons">
+            <button class="btn btn-add" onclick="event.stopPropagation(); addToCart('${product.id}')" ${isInCart ? 'disabled' : ''}>
+              ${isInCart ? 'In Cart' : 'Add to Cart'}
+            </button>
+            <button class="btn btn-wish" onclick="event.stopPropagation(); toggleWishlist('${product.id}')" ${isInWishlist ? 'disabled' : ''}>
+              ${isInWishlist ? 'In Wishlist' : 'Add to Wishlist'}
+            </button>
+            <button class="btn btn-buy-now" onclick="event.stopPropagation(); initiateSingleProductCheckout('${product.id}');">Buy Now</button>
+          </div>
+        `;
+        productsGrid.appendChild(productCard);
+      });
+    }
+
+    /**
+     * Adds a product to the cart or updates its quantity if already present.
+     * @param {string} productId - The ID of the product.
+     * @param {number} [quantity=1] - The quantity to add.
+     */
+    function addToCart(productId, quantity = 1) {
+      const product = products.find(p => p.id === productId);
+      if (product) {
+        const existingItem = cart.find(item => item.id === productId);
+        if (existingItem) {
+          existingItem.quantity += quantity;
+          showToast(`${product.name} quantity updated in cart!`);
+        } else {
+          cart.push({ ...product, quantity: quantity });
+          showToast(`${product.name} added to cart!`);
+        }
+        saveState();
+        updateCounts();
+        populateCart(); // Update cart modal if open
+        applyFilters(); // Update product grid buttons
+        openModal('cartModal'); // Open cart modal after adding to cart
+      }
+    }
+
+    /**
+     * Updates the quantity of a product in the cart.
+     * @param {string} productId - The ID of the product.
+     * @param {number} change - The amount to change the quantity by (e.g., -1 or 1).
+     */
+    function updateCartQuantity(productId, change) {
+        const itemIndex = cart.findIndex(item => item.id === productId);
+        if (itemIndex > -1) {
+            cart[itemIndex].quantity += change;
+            if (cart[itemIndex].quantity <= 0) {
+                cart.splice(itemIndex, 1); // Remove if quantity is 0 or less
+            }
+            saveState();
+            updateCounts();
+            populateCart(); // Re-render cart to show updated quantity and total
+            showToast('Cart updated!');
+        }
+    }
+
+    /**
+     * Removes a product from the cart.
+     * @param {string} productId - The ID of the product to remove.
+     */
+    function removeFromCart(productId) {
+      cart = cart.filter(item => item.id !== productId);
+      saveState();
+      updateCounts();
+      populateCart();
+      applyFilters(); // Update product grid buttons
+      showToast('Item removed from cart!');
+    }
+
+    /**
+     * Moves a product from the cart to the wishlist.
+     * @param {string} productId - The ID of the product.
+     */
+    function moveToWishlistFromCart(productId) {
+        const product = cart.find(item => item.id === productId);
+        if (product) {
+            // Add to wishlist if not already there
+            if (!wishlist.some(item => item.id === productId)) {
+                wishlist.push({ ...product, quantity: 1 }); // Add with quantity 1
+                showToast(`${product.name} moved to wishlist!`);
+            } else {
+                showToast(`${product.name} is already in your wishlist.`);
+            }
+            // Remove from cart
+            removeFromCart(productId);
+            saveState();
+            updateCounts();
+            populateWishlist(); // Update wishlist modal if open
+            applyFilters(); // Update product grid buttons
+        }
+    }
+
+    /**
+     * Populates the cart modal with current cart items.
+     */
+    function populateCart() {
+      const cartItemsList = document.getElementById('cartItemsList');
+      const cartTotalPrice = document.getElementById('cartTotalPrice');
+      cartItemsList.innerHTML = '';
+      let total = 0;
+
+      if (cart.length === 0) {
+        cartItemsList.innerHTML = '<p style="text-align: center; color: var(--modal-text-color);">Your cart is empty.</p>';
+      } else {
+        cart.forEach(item => {
+          const li = document.createElement('li');
+          li.innerHTML = `
+            <img src="${item.image}" alt="${item.name}" class="item-image" onerror="this.onerror=null; this.src='https://placehold.co/80x80/CCCCCC/000000?text=Image+Error';">
+            <div class="item-details">
+              <div class="item-title">${item.name}</div>
+              <div class="item-price">₹${(item.price * item.quantity).toLocaleString('en-IN')}</div>
+              <p style="font-size: 0.9em; color: var(--order-text-color);">Price per item: ₹${item.price.toLocaleString('en-IN')}</p>
+            </div>
+            <div class="item-actions">
+                <div class="quantity-controls">
+                    <button onclick="updateCartQuantity('${item.id}', -1)">-</button>
+                    <span>${item.quantity}</span>
+                    <button onclick="updateCartQuantity('${item.id}', 1)">+</button>
+                </div>
+              <button class="btn remove-btn" onclick="removeFromCart('${item.id}')">Remove</button>
+              <button class="btn move-btn" onclick="moveToWishlistFromCart('${item.id}')">Move to Wishlist</button>
+            </div>
+          `;
+          cartItemsList.appendChild(li);
+          total += item.price * item.quantity;
+        });
+      }
+      cartTotalPrice.textContent = `₹${total.toLocaleString('en-IN')}`;
+    }
+
+    /**
+     * Toggles a product's presence in the wishlist.
+     * @param {string} productId - The ID of the product.
+     */
+    function toggleWishlist(productId) {
+      const product = products.find(p => p.id === productId);
+      if (product) {
+        const existingItemIndex = wishlist.findIndex(item => item.id === productId);
+        if (existingItemIndex > -1) {
+          wishlist.splice(existingItemIndex, 1);
+          showToast(`${product.name} removed from wishlist!`);
+        } else {
+          wishlist.push({ ...product, quantity: 1 });
+          showToast(`${product.name} added to wishlist!`);
+        }
+        saveState();
+        updateCounts();
+        applyFilters(); // Update button text on product card
+        populateWishlist(); // Update wishlist modal if open
+        openModal('wishlistModal'); // Open wishlist modal after adding/removing
+      }
+    }
+
+    /**
+     * Removes a product from the wishlist.
+     * @param {string} productId - The ID of the product to remove.
+     */
+    function removeFromWishlist(productId) {
+      wishlist = wishlist.filter(item => item.id !== productId);
+      saveState();
+      updateCounts();
+      applyFilters(); // Update button text on product card
+      populateWishlist();
+      showToast('Item removed from wishlist!');
+    }
+
+    /**
+     * Moves a product from the wishlist to the cart.
+     * @param {string} productId - The ID of the product.
+     */
+    function moveToCartFromWishlist(productId) {
+        const product = wishlist.find(item => item.id === productId);
+        if (product) {
+            addToCart(productId); // This function handles existing items and quantity
+            removeFromWishlist(productId); // Remove from wishlist after moving
+            saveState();
+            updateCounts();
+            populateCart(); // Update cart modal if open
+            applyFilters(); // Update product grid buttons
+        }
+    }
+
+    /**
+     * Populates the wishlist modal with current wishlist items.
+     */
+    function populateWishlist() {
+      const wishlistItemsList = document.getElementById('wishlistItemsList');
+      wishlistItemsList.innerHTML = '';
+
+      if (wishlist.length === 0) {
+        wishlistItemsList.innerHTML = '<p style="text-align: center; color: var(--modal-text-color);">Your wishlist is empty.</p>';
+      } else {
+        wishlist.forEach(item => {
+          const li = document.createElement('li');
+          li.innerHTML = `
+            <img src="${item.image}" alt="${item.name}" class="item-image" onerror="this.onerror=null; this.src='https://placehold.co/80x80/CCCCCC/000000?text=Image+Error';">
+            <div class="item-details">
+              <div class="item-title">${item.name}</div>
+              <div class="item-price">₹${item.price.toLocaleString('en-IN')}</div>
+            </div>
+            <div class="item-actions">
+              <button class="btn buy-btn" onclick="moveToCartFromWishlist('${item.id}')">Move to Cart</button>
+              <button class="btn remove-btn" onclick="removeFromWishlist('${item.id}')">Remove</button>
+            </div>
+          `;
+          wishlistItemsList.appendChild(li);
+        });
+      }
+    }
+
+    let productToOrder = null; // Stores the product being ordered (for single product checkout)
+
+    /**
+     * Opens the product detail modal with information about a specific product.
+     * @param {string} productId - The ID of the product to display.
+     */
+    function openProductDetailModal(productId) {
+        const product = products.find(p => p.id === productId);
+        if (product) {
+            document.getElementById('productDetailTitle').textContent = product.name;
+            document.getElementById('productDetailImage').src = product.image;
+            document.getElementById('productDetailDescription').textContent = product.description;
+            document.getElementById('productDetailPrice').textContent = `₹${product.price.toLocaleString('en-IN')}`;
+            document.getElementById('productDetailRating').textContent = `${getStarRating(product.rating)} (${product.rating})`;
+
+            const productDetailActions = document.getElementById('productDetailActions');
+            productDetailActions.innerHTML = ''; // Clear existing buttons
+
+            const isInCart = cart.some(item => item.id === product.id);
+            const isInWishlist = wishlist.some(item => item.id === product.id);
+
+            // Add to Cart button
+            const addToCartBtn = document.createElement('button');
+            addToCartBtn.className = `btn btn-add ${isInCart ? 'disabled' : ''}`;
+            addToCartBtn.textContent = isInCart ? 'In Cart' : 'Add to Cart';
+            addToCartBtn.disabled = isInCart;
+            addToCartBtn.onclick = () => {
+                addToCart(product.id);
+                closeModal('productDetailModal'); // Close modal after adding to cart
+            };
+            productDetailActions.appendChild(addToCartBtn);
+
+            // Buy Now button
+            const buyNowBtn = document.createElement('button');
+            buyNowBtn.className = 'btn btn-buy-now';
+            buyNowBtn.textContent = 'Buy Now';
+            buyNowBtn.onclick = () => {
+                initiateSingleProductCheckout(product.id); // Open order form from detail modal
+            };
+            productDetailActions.appendChild(buyNowBtn);
+
+            // Wishlist button
+            const wishBtn = document.createElement('button');
+            wishBtn.className = `btn btn-wish ${isInWishlist ? 'disabled' : ''}`;
+            wishBtn.textContent = isInWishlist ? 'In Wishlist' : 'Add to Wishlist';
+            wishBtn.disabled = isInWishlist;
+            wishBtn.onclick = () => {
+                toggleWishlist(product.id);
+                closeModal('productDetailModal'); // Close modal after adding to wishlist
+            };
+            productDetailActions.appendChild(wishBtn);
+
+            openModal('productDetailModal');
+        }
+    }
+
+    /**
+     * Initiates the checkout process for a single product.
+     * @param {string} productId - The ID of the product to checkout.
+     */
+    function initiateSingleProductCheckout(productId) {
+        productToOrder = products.find(p => p.id === productId);
+        if (productToOrder) {
+            setupOrderForm(productToOrder);
+            closeModal('productDetailModal');
+            openModal('orderFormModal');
+        }
+    }
+
+    /**
+     * Initiates the checkout process for all items in the cart.
+     */
+    function checkoutCart() {
+        if (cart.length === 0) {
+            showToast('Your cart is empty. Add items before checking out.');
+            return;
+        }
+        productToOrder = null; // Reset for cart checkout
+        setupOrderForm(cart); // Pass the whole cart for checkout
+        closeModal('cartModal');
+        openModal('orderFormModal');
+    }
+
+    /**
+     * Sets up the order form with product details (either single product or cart items).
+     * @param {object|Array} items - The product object for single checkout or the cart array for cart checkout.
+     */
+    function setupOrderForm(items) {
+        const orderSummaryProductTitle = document.getElementById('orderSummaryProductTitle');
+        const orderSummaryProductPricePerItem = document.getElementById('orderSummaryProductPricePerItem');
+        const orderQuantityInput = document.getElementById('orderQuantity');
+        const orderSummaryTotalPrice = document.getElementById('orderSummaryTotalPrice');
+
+        if (Array.isArray(items)) { // Checkout from cart
+            orderSummaryProductTitle.textContent = 'Multiple Items (See Cart)';
+            orderSummaryProductPricePerItem.textContent = 'N/A';
+            orderQuantityInput.style.display = 'none'; // Hide quantity input for cart checkout
+            let totalCartPrice = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            orderSummaryTotalPrice.textContent = `₹${totalCartPrice.toLocaleString('en-IN')}`;
+        } else { // Checkout single product
+            orderSummaryProductTitle.textContent = items.name;
+            orderSummaryProductPricePerItem.textContent = `₹${items.price.toLocaleString('en-IN')}`;
+            orderQuantityInput.style.display = 'block'; // Show quantity input
+            orderQuantityInput.value = 1; // Default to 1 for single product
+            orderSummaryTotalPrice.textContent = `₹${items.price.toLocaleString('en-IN')}`; // Initial total for 1 item
+            orderQuantityInput.oninput = () => {
+                const quantity = parseInt(orderQuantityInput.value);
+                if (quantity > 0) {
+                    orderSummaryTotalPrice.textContent = `₹${(items.price * quantity).toLocaleString('en-IN')}`;
+                } else {
+                    orderSummaryTotalPrice.textContent = `₹0`;
+                }
+            };
+        }
+        // Prefill form if user is logged in
+        if (loggedInUser) {
+            document.getElementById('fullName').value = loggedInUser.name;
+            document.getElementById('email').value = loggedInUser.email;
+        } else {
+            document.getElementById('fullName').value = '';
+            document.getElementById('email').value = '';
+        }
+        document.getElementById('address').value = '';
+        document.getElementById('paymentMethod').value = '';
+    }
+
+    // Event listener for order form submission
+    document.getElementById('orderForm').addEventListener('submit', (event) => {
+        event.preventDefault();
+        if (!loggedInUser) {
+            showToast('Please log in or create an account to place an order.');
+            closeModal('orderFormModal');
+            openModal('loginModal');
+            return;
+        }
+
+        const fullName = document.getElementById('fullName').value;
+        const email = document.getElementById('email').value;
+        const address = document.getElementById('address').value;
+        const paymentMethod = document.getElementById('paymentMethod').value;
+
+        let itemsToOrder;
+        let orderTotal;
+
+        if (productToOrder) { // Single product checkout
+            const quantity = parseInt(document.getElementById('orderQuantity').value);
+            if (quantity <= 0) {
+                showToast('Quantity must be at least 1.');
+                return;
+            }
+            itemsToOrder = [{ ...productToOrder, quantity: quantity }];
+            orderTotal = productToOrder.price * quantity;
+        } else { // Cart checkout
+            itemsToOrder = [...cart]; // Copy cart items
+            orderTotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        }
+
+        const newOrder = {
+            id: 'ORD-' + Date.now(), // Unique order ID
+            userId: loggedInUser.email, // Associate order with logged-in user
+            date: new Date().toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' }),
+            items: itemsToOrder,
+            total: orderTotal,
+            shippingAddress: address,
+            paymentMethod: paymentMethod,
+            status: 'Processing', // Initial status for new orders
+            trackingNumber: 'TRK-' + Math.random().toString(36).substr(2, 9).toUpperCase() // Dummy tracking number
+        };
+
+        orders.unshift(newOrder); // Add to the beginning of the orders array (most recent first)
+        saveState();
+        updateCounts();
+        showToast('Order placed successfully!');
+        closeModal('orderFormModal');
+
+        if (productToOrder === null) { // If it was a cart checkout, clear the cart
+            cart = [];
+            saveState();
+            updateCounts();
+        }
+        populateOrders(); // Update order history modal
+    });
+
+
+    /**
+     * Populates the order history modal with the user's orders.
+     */
+    function populateOrders() {
+        const orderHistoryList = document.getElementById('orderHistoryList');
+        orderHistoryList.innerHTML = '';
+
+        if (!loggedInUser) {
+            orderHistoryList.innerHTML = '<p style="text-align: center; color: var(--modal-text-color);">Please log in to view your order history.</p>';
+            return;
+        }
+
+        const userOrders = orders.filter(order => order.userId === loggedInUser.email);
+
+        if (userOrders.length === 0) {
+            orderHistoryList.innerHTML = '<p style="text-align: center; color: var(--modal-text-color);">You have no orders yet.</p>';
+        } else {
+            // Sort orders by date, most recent first
+            const sortedOrders = [...userOrders].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            sortedOrders.forEach(order => {
+                const orderDiv = document.createElement('div');
+                orderDiv.classList.add('order-item');
+                orderDiv.innerHTML = `
+                    <div class="order-date">Order Date: ${order.date}</div>
+                    <div class="order-status ${order.status.toLowerCase().replace(/ /g, '_')}">Status: ${order.status}</div>
+                    <div class="order-id" style="font-size: 0.9em; color: var(--shipping-text-color);">Order ID: ${order.id}</div>
+                    <ul class="order-items-list">
+                        ${order.items.map(item => `
+                            <li>
+                                <img src="${item.image}" alt="${item.name}" class="item-image" onerror="this.onerror=null; this.src='https://placehold.co/50x50/CCCCCC/000000?text=Image+Error';">
+                                <div class="item-details" style="flex-grow: 1;">
+                                    <div class="item-title" style="font-size: 1em;">${item.name}</div>
+                                    <div class="item-price" style="font-size: 0.9em;">₹${item.price.toLocaleString('en-IN')} x ${item.quantity}</div>
+                                </div>
+                            </li>
+                        `).join('')}
+                    </ul>
+                    <div class="order-total">Total: ₹${order.total.toLocaleString('en-IN')}</div>
+                    <div class="shipping-details">
+                        <p><strong>Shipping Address:</strong> ${order.shippingAddress}</p>
+                        <p><strong>Payment Method:</strong> ${order.paymentMethod}</p>
+                        <p><strong>Tracking Number:</strong> ${order.trackingNumber}</p>
+                    </div>
+                    <div class="order-actions">
+                        ${(order.status === 'Processing' || order.status === 'Shipped' || order.status === 'Out for Delivery') ? `
+                            <button class="btn btn-track" onclick="trackOrder('${order.trackingNumber}', '${order.status}')">Track Delivery</button>
+                        ` : ''}
+                        ${(order.status === 'Processing' || order.status === 'Shipped') ? `
+                            <button class="btn btn-cancel" onclick="cancelOrder('${order.id}')">Cancel Order</button>
+                        ` : ''}
+                        ${order.status === 'Delivered' ? `
+                            <button class="btn btn-return" onclick="updateOrderStatus('${order.id}', 'Return Requested')">Request Return</button>
+                            <button class="btn btn-refund" onclick="updateOrderStatus('${order.id}', 'Refund Processed'); showToast('Refund process initiated for ${order.id}.');">Request Refund</button>
+                        ` : ''}
+                        ${order.status === 'Return Requested' ? `
+                            <button class="btn btn-track" onclick="showToast('Return for ${order.id} is being processed.');">Check Return Status</button>
+                        ` : ''}
+                        ${order.status === 'Refund Processed' ? `
+                            <button class="btn btn-track" onclick="showToast('Refund for ${order.id} has been processed.');">Check Refund Status</button>
+                        ` : ''}
+                    </div>
+                `;
+                orderHistoryList.appendChild(orderDiv);
+            });
+        }
+    }
+
+    /**
+     * Updates the status of a specific order.
+     * @param {string} orderId - The ID of the order to update.
+     * @param {string} newStatus - The new status for the order.
+     */
+    function updateOrderStatus(orderId, newStatus) {
+        const orderIndex = orders.findIndex(order => order.id === orderId);
+        if (orderIndex > -1) {
+            orders[orderIndex].status = newStatus;
+            saveState();
+            populateOrders(); // Re-render orders to show updated status
+            showToast(`Order ${orderId} status updated to ${newStatus}.`);
+        }
+    }
+
+    /**
+     * Cancels an order by updating its status to 'Cancelled'.
+     * @param {string} orderId - The ID of the order to cancel.
+     */
+    function cancelOrder(orderId) {
+        const orderIndex = orders.findIndex(order => order.id === orderId);
+        if (orderIndex > -1) {
+            // Only allow cancellation if status is Processing or Shipped
+            if (orders[orderIndex].status === 'Processing' || orders[orderIndex].status === 'Shipped') {
+                orders[orderIndex].status = 'Cancelled';
+                saveState();
+                populateOrders(); // Re-render orders to show updated status
+                showToast(`Order ${orderId} has been cancelled.`);
+            } else {
+                showToast(`Order ${orderId} cannot be cancelled as it is already ${orders[orderIndex].status}.`);
+            }
+        }
+    }
+
+    // Removed updateOrderStatusSimulated function as per user request.
+
+    /**
+     * Provides a simulated tracking message based on the current order status.
+     * @param {string} trackingNumber - The tracking number of the order.
+     * @param {string} currentStatus - The current status of the order.
+     */
+    function trackOrder(trackingNumber, currentStatus) {
+        let message = `Tracking for ${trackingNumber}: `;
+        switch (currentStatus) {
+            case 'Processing':
+                message += 'Your order is being processed.';
+                break;
+            case 'Shipped':
+                message += 'Your order has been shipped and is in transit.';
+                break;
+            case 'Out for Delivery':
+                message += 'Your order is out for delivery and will arrive soon.';
+                break;
+            case 'Delivered':
+                message += 'Your order has been delivered.';
+                break;
+            case 'Return Requested':
+                message += 'Your return request is being processed.';
+                break;
+            case 'Refund Processed':
+                message += 'Your refund has been processed.';
+                break;
+            case 'Cancelled':
+                message += 'Your order has been cancelled.';
+                break;
+            default:
+                message += 'Status unknown.';
+        }
+        showToast(message);
+    }
+
+
+    /**
+     * Updates the text and functionality of login/logout/create account buttons.
+     */
+    function updateAuthButtons() {
+      const authBtn = document.getElementById('authBtn');
+      if (loggedInUser) {
+        authBtn.textContent = `Hi, ${loggedInUser.name.split(' ')[0]}`; // Show first name
+        authBtn.onclick = () => openModal('userProfileModal'); // Open profile on click
+      } else {
+        authBtn.textContent = 'Log In';
+        authBtn.onclick = () => openModal('loginModal');
+      }
+    }
+
+    /**
+     * Handles the click on the combined auth button.
+     */
+    function handleAuthClick() {
+      if (loggedInUser) {
+        openModal('userProfileModal');
+      } else {
+        openModal('loginModal');
+      }
+    }
+
+    /**
+     * Populates the user profile modal with logged-in user data and recent orders.
+     */
+    function populateUserProfileModal() {
+        if (loggedInUser) {
+            document.getElementById('profileName').textContent = loggedInUser.name;
+            document.getElementById('profileEmail').textContent = loggedInUser.email;
+
+            const profileRecentOrders = document.getElementById('profileRecentOrders');
+            const userOrders = orders.filter(order => order.userId === loggedInUser.email);
+
+            if (userOrders.length > 0) {
+                // Display up to 3 most recent orders
+                const recentOrdersHtml = userOrders.slice(0, 3).map(order => `
+                    <p>Order ID: <strong>${order.id}</strong> - Total: ₹${order.total.toLocaleString('en-IN')} - Status: <span class="${order.status.toLowerCase().replace(/ /g, '_')}">${order.status}</span></p>
+                `).join('');
+                profileRecentOrders.innerHTML = recentOrdersHtml;
+            } else {
+                profileRecentOrders.textContent = 'No recent orders.';
+            }
+        }
+    }
+
+    /**
+     * Logs out the current user, clears user data, and updates UI.
+     */
+    function logout() {
+      loggedInUser = null;
+      saveState();
+      updateAuthButtons();
+      showToast('Logged out successfully!');
+      populateOrders(); // Clear orders view for logged out user
+    }
+
+    // Event listener for login form submission
+    document.getElementById('loginForm').addEventListener('submit', (event) => {
+      event.preventDefault();
+      const email = document.getElementById('loginEmail').value;
+      const password = document.getElementById('loginPassword').value;
+
+      // Simple mock authentication (replace with real auth in production)
+      if (email === 'user@example.com' && password === 'password123') {
+        loggedInUser = { name: 'Demo User', email: email };
+        showToast('Logged in successfully!');
+        saveState();
+        updateAuthButtons();
+        closeModal('loginModal');
+        document.getElementById('loginForm').reset();
+        populateOrders(); // Load orders for the newly logged in user
+      } else {
+        showToast('Invalid email or password.');
+      }
+    });
+
+    // Event listener for create account form submission
+    document.getElementById('createAccountForm').addEventListener('submit', (event) => {
+      event.preventDefault();
+      const name = document.getElementById('createName').value;
+      const email = document.getElementById('createEmail').value;
+      const password = document.getElementById('createPassword').value;
+      // In a real app, you would send this to a server to create a new user
+      console.log('Create Account attempt:', { name, email, password });
+      // For demo, just log in the user after "creating" the account
+      loggedInUser = { name: name, email: email };
+      showToast('Account created successfully! You are now logged in.');
+      saveState();
+      updateAuthButtons();
+      closeModal('createAccountModal');
+      document.getElementById('createAccountForm').reset();
+      populateOrders();
+    });
+
+
+    // Initialize page when DOM is loaded
+    document.addEventListener('DOMContentLoaded', () => {
+        populateCategories(); // First populate categories
+        loadState();          // Then load any saved data (cart, wishlist, orders)
+        applyFilters();       // Display products (applies initial filters, if any, and updates button states)
+        updateCounts();       // Update header counts
+    });
+
+    // Optional: make header title clickable to reset search and scroll top
+    document.querySelector('header h1').addEventListener('click', () => {
+      document.getElementById('searchInput').value = '';
+      selectCategory('All'); // Reset category to 'All'
+      applyFilters(); // Re-apply filters to show all products
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  </script>
+
+</body>
+</html>
